@@ -14,37 +14,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const client_1 = require("@prisma/client");
-const express_async_handler_1 = __importDefault(require("express-async-handler"));
+const http_1 = __importDefault(require("http"));
+const apollo_server_express_1 = require("apollo-server-express");
+const apollo_server_core_1 = require("apollo-server-core");
+const Schema_1 = __importDefault(require("./Schema"));
+const Resolvers_1 = __importDefault(require("./Resolvers"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT;
 app.use(express_1.default.json());
-const prisma = new client_1.PrismaClient();
 app.get('/', (req, res) => {
     res.send('Express + TypeScript Server');
 });
-const getAllusers = () => __awaiter(void 0, void 0, void 0, function* () {
-    const allUsers = yield prisma.users.findMany({
-        take: 10,
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            username: true,
-            plan_id: true,
-            subscription_status: true,
-        }
-    }).catch((err) => {
-        console.log(err.message);
+function startApolloServer(schema, resolvers) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const app = (0, express_1.default)();
+        const httpServer = http_1.default.createServer(app);
+        const server = new apollo_server_express_1.ApolloServer({
+            typeDefs: schema,
+            resolvers,
+            //tell Express to attach GraphQL functionality to the server
+            plugins: [(0, apollo_server_core_1.ApolloServerPluginDrainHttpServer)({ httpServer })],
+        });
+        yield server.start(); //start the GraphQL server.
+        server.applyMiddleware({ app });
+        yield new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve) //run the server on port 4000
+        );
+        console.log(`Server ready at http://localhost:4000${server.graphqlPath}`);
     });
-    return allUsers;
-});
-app.get('/users', (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield getAllusers();
-    console.log(users);
-    return users ? res.status(200).json(users) : res.status(404).json({ message: 'Users not found' });
-})));
+}
+//in the end, run the server and pass in our Schema and Resolver.
+startApolloServer(Schema_1.default, Resolvers_1.default);
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });

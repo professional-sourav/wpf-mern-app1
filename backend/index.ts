@@ -1,7 +1,10 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { PrismaClient } from "@prisma/client";
-import asyncHandler from 'express-async-handler'
+import http from "http";
+import { ApolloServer } from 'apollo-server-express';
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+import Schema from './Schema';
+import Resolvers from './Resolvers';
 
 dotenv.config();
 
@@ -9,38 +12,28 @@ const app: Express = express();
 const port = process.env.PORT;
 app.use(express.json());
 
-const prisma = new PrismaClient();
-
 app.get('/', (req: Request, res: Response) => {
     res.send('Express + TypeScript Server');
 });
 
-const getAllusers = async () => {
-    const allUsers = await prisma.users.findMany({
-        take: 10,
-        
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            username: true,
-            plan_id: true,
-            subscription_status: true,
-        }
-    }).catch((err: any) => {
-        console.log(err.message);        
-    })
-
-    return allUsers;
-}
-
-app.get('/users', asyncHandler(async (req: any, res: any) => {
-
-    const users = await getAllusers();
-    console.log(users);    
-
-    return users ? res.status(200).json(users) : res.status(404).json({message: 'Users not found'});
-}));
+async function startApolloServer(schema: any, resolvers: any) {
+    const app = express();
+    const httpServer = http.createServer(app);
+    const server = new ApolloServer({
+      typeDefs: schema,
+      resolvers,
+      //tell Express to attach GraphQL functionality to the server
+      plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    }) as any;
+    await server.start(); //start the GraphQL server.
+    server.applyMiddleware({ app });
+    await new Promise<void>((resolve) =>
+      httpServer.listen({ port: 4000 }, resolve) //run the server on port 4000
+    );
+    console.log(`Server ready at http://localhost:4000${server.graphqlPath}`);
+  }
+  //in the end, run the server and pass in our Schema and Resolver.
+  startApolloServer(Schema, Resolvers);
 
 
 app.listen(port, () => {
