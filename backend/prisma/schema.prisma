@@ -1198,7 +1198,7 @@ model tasks {
   task_elementY                     String?       @db.Text
   task_relativeX                    String?       @db.Text
   task_relativeY                    String?       @db.Text
-  task_notify_users                 String?       @db.Text
+  task_notify_users                 String?       @db.Text @default("null")
   task_element_height               String?       @db.Text
   task_element_width                String?       @db.Text
   task_comment_id                   Int?
@@ -1210,7 +1210,7 @@ model tasks {
   wpf_task_url                      String?       @db.VarChar(500)
   estimated_time                    String?       @db.VarChar(255)
   spent_time                        String?       @db.VarChar(255)
-  notify_wp_feedback_users          String?       @db.VarChar(255)
+  notify_wp_feedback_users          String?       @db.VarChar(255) @default("null")
   responsible_user                  Int?
   deleted_at                        DateTime?     @db.Timestamp(0)
   task_tags                         String?       @db.Text
