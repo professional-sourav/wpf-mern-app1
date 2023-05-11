@@ -1,0 +1,1491 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model actions {
+  id              Int    @id @default(autoincrement()) @db.UnsignedInt
+  name            String    @unique(map: "actions_name_unique") @db.VarChar(255)
+  description     String?   @db.LongText
+  display_caption String    @db.LongText
+  icon            String?   @db.VarChar(255)
+  user_id         Int    @db.UnsignedInt
+  created_at      DateTime? @db.Timestamp(0)
+  updated_at      DateTime? @db.Timestamp(0)
+  action_id       String    @db.LongText
+  icon_2          String?   @db.LongText
+  users           users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "actions_user_id_foreign")
+
+  @@index([user_id], map: "actions_user_id_foreign")
+}
+
+model activity_log {
+  id            Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id       Int?   @db.UnsignedInt
+  guest_user_id String?   @db.VarChar(255)
+  site_id       Int?   @db.UnsignedInt
+  task_id       String?   @db.VarChar(255)
+  comment_id    Int?   @db.UnsignedInt
+  license_id    Int?   @db.UnsignedInt
+  title         String?   @db.Text
+  description   String?   @db.Text
+  type          String?   @db.Text
+  type_status   String?   @db.VarChar(255)
+  from_plugin   Boolean   @default(false)
+  job_id        Int?   @db.UnsignedInt
+  is_read       Boolean?  @default(false)
+  spent_time    String?   @db.VarChar(255)
+  created_at    DateTime? @db.Timestamp(0)
+  updated_at    DateTime? @db.Timestamp(0)
+  comments      comments? @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "activity_log_comment_id_foreign")
+
+  @@index([comment_id], map: "activity_log_comment_id_index")
+  @@index([job_id], map: "activity_log_job_id_index")
+  @@index([site_id], map: "activity_log_site_id_index")
+  @@index([task_id], map: "activity_log_task_id_index")
+  @@index([user_id], map: "activity_log_user_id_index")
+}
+
+model admin_menu {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  parent_id  Int       @default(0)
+  order      Int       @default(0)
+  title      String    @db.VarChar(50)
+  icon       String    @db.VarChar(50)
+  uri        String?   @db.VarChar(255)
+  permission String?   @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model admin_operation_log {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int
+  path       String    @db.VarChar(255)
+  method     String    @db.VarChar(10)
+  ip         String    @db.VarChar(255)
+  input      String    @db.Text
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+
+  @@index([user_id], map: "admin_operation_log_user_id_index")
+}
+
+model admin_permissions {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  name        String    @unique(map: "admin_permissions_name_unique") @db.VarChar(50)
+  slug        String    @unique(map: "admin_permissions_slug_unique") @db.VarChar(50)
+  http_method String?   @db.VarChar(255)
+  http_path   String?   @db.Text
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model admin_role_menu {
+  role_id    Int
+  menu_id    Int
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+
+  @@index([role_id, menu_id], map: "admin_role_menu_role_id_menu_id_index")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model admin_role_permissions {
+  role_id       Int
+  permission_id Int
+  created_at    DateTime? @db.Timestamp(0)
+  updated_at    DateTime? @db.Timestamp(0)
+
+  @@index([role_id, permission_id], map: "admin_role_permissions_role_id_permission_id_index")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model admin_role_users {
+  role_id    Int
+  user_id    Int
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+
+  @@index([role_id, user_id], map: "admin_role_users_role_id_user_id_index")
+  @@ignore
+}
+
+model admin_roles {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  name       String    @unique(map: "admin_roles_name_unique") @db.VarChar(50)
+  slug       String    @unique(map: "admin_roles_slug_unique") @db.VarChar(50)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model admin_user_permissions {
+  user_id       Int
+  permission_id Int
+  created_at    DateTime? @db.Timestamp(0)
+  updated_at    DateTime? @db.Timestamp(0)
+
+  @@index([user_id, permission_id], map: "admin_user_permissions_user_id_permission_id_index")
+  @@ignore
+}
+
+model admin_users {
+  id             Int       @id @default(autoincrement()) @db.UnsignedInt
+  username       String    @unique(map: "admin_users_username_unique") @db.VarChar(190)
+  password       String    @db.VarChar(60)
+  name           String    @db.VarChar(255)
+  avatar         String?   @db.VarChar(255)
+  remember_token String?   @db.VarChar(100)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+}
+
+model admins {
+  id                Int    @id @default(autoincrement()) @db.UnsignedInt
+  name              String    @db.VarChar(255)
+  email             String    @unique(map: "admins_email_unique") @db.VarChar(255)
+  email_verified_at DateTime? @db.Timestamp(0)
+  password          String    @db.VarChar(255)
+  remember_token    String?   @db.VarChar(100)
+  created_at        DateTime? @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
+}
+
+model automatic_task_creation_settings {
+  id                    Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id               Int    @db.UnsignedInt
+  clickup               Boolean   @default(false)
+  slack                 Boolean   @default(false)
+  asana                 Boolean   @default(false)
+  jira                  Boolean   @default(false)
+  teamwork              Boolean   @default(false)
+  basecamp              Boolean   @default(false)
+  trello                Boolean   @default(false)
+  created_at            DateTime? @db.Timestamp(0)
+  updated_at            DateTime? @db.Timestamp(0)
+  clickup_folder_id     String?   @db.VarChar(255)
+  clickup_task_list_id  String?   @db.VarChar(255)
+  asana_project_id      String?   @db.VarChar(255)
+  asana_section_id      String?   @db.VarChar(255)
+  jira_project_id       String?   @db.VarChar(255)
+  teamwork_project_id   String?   @db.VarChar(255)
+  teamwork_task_list_id String?   @db.VarChar(255)
+  basecamp_project_id   String?   @db.LongText
+  basecamp_todo_list_id String?   @db.LongText
+  basecamp_todo_set_id  String?   @db.LongText
+  trello_board_id       String?   @db.LongText
+  trello_list_id        String?   @db.LongText
+  users                 users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "automatic_task_creation_settings_user_id_foreign")
+
+  @@index([user_id], map: "automatic_task_creation_settings_user_id_foreign")
+}
+
+model automation_templates {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  trigger_id String    @db.LongText
+  action_id  String    @db.LongText
+  feature    Boolean   @default(false)
+  type       String?   @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  meta       Json
+}
+
+model automation_workflows {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  meta       Json
+  status     Boolean   @default(true)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  user_id    Int    @db.UnsignedInt
+  trigger_id String?   @db.LongText
+  action_id  String?   @db.LongText
+  users      users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "automation_workflows_user_id_foreign")
+
+  @@index([user_id], map: "automation_workflows_user_id_foreign")
+}
+
+model basecamp_webhooks {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id    String?   @db.VarChar(255)
+  project_id String?   @db.VarChar(255)
+  webhook_id String?   @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model block_emails {
+  id          Int    @id @default(autoincrement()) @db.UnsignedInt
+  email       String
+  description String?   @db.Text
+  status      Boolean   @default(true)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+}
+
+model collaborator_invite_tokens {
+  id          Int    @id @default(autoincrement()) @db.UnsignedInt
+  invited_by  Int?   @db.UnsignedInt
+  sender_name String    @db.VarChar(255)
+  site_id     Int?   @db.UnsignedInt
+  name        String?   @db.VarChar(255)
+  email       String    @db.Text
+  token       String    @db.VarChar(70)
+  status      Boolean   @default(false)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  users       users?    @relation(fields: [invited_by], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "collaborator_invite_tokens_invited_by_foreign")
+  sites       sites?    @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "collaborator_invite_tokens_site_id_foreign")
+
+  @@index([invited_by], map: "collaborator_invite_tokens_invited_by_index")
+  @@index([site_id], map: "collaborator_invite_tokens_site_id_index")
+}
+
+model comments {
+  id                  Int            @id @default(autoincrement()) @db.UnsignedInt
+  task_id             Int?           @db.UnsignedInt
+  comment_id          Int?           @db.UnsignedInt
+  comment_content     String?           @db.LongText
+  comment_date        DateTime?         @db.DateTime(0)
+  user_id             Int?           @db.UnsignedInt
+  created_at          DateTime?         @db.Timestamp(0)
+  updated_at          DateTime?         @db.Timestamp(0)
+  comment_type        String            @db.VarChar(255)
+  is_note             Boolean           @default(false)
+  login_user_id       Int            @default(0) @db.UnsignedInt
+  is_log              Boolean           @default(false)
+  wpf_user_id         Int?
+  guest_author_name   String?           @db.VarChar(255)
+  clickup_comment_id  String?           @db.VarChar(255)
+  clickup_task_id     String?           @db.VarChar(255)
+  deleted_at          DateTime?         @db.Timestamp(0)
+  asana_comment_id    String?           @db.VarChar(255)
+  asana_task_id       String?           @db.VarChar(255)
+  teamwork_comment_id String?           @db.VarChar(255)
+  teamwork_task_id    String?           @db.VarChar(255)
+  jira_task_id        String?           @db.VarChar(255)
+  jira_comment_id     String?           @db.VarChar(255)
+  basecamp_comment_id String?           @db.LongText
+  basecamp_task_id    String?           @db.LongText
+  trello_comment_id   String?           @db.LongText
+  trello_task_id      String?           @db.LongText
+  is_automated        Boolean           @default(false)
+  filename            String?           @db.LongText
+  activity_log        activity_log[]
+  tasks               tasks?            @relation(fields: [task_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "comments_task_id_foreign")
+  email_responses     email_responses[]
+
+  @@index([task_id], map: "comments_task_id_foreign")
+}
+
+model conditions {
+  id              Int    @id @default(autoincrement()) @db.UnsignedInt
+  name            String    @db.VarChar(255)
+  description     String?   @db.LongText
+  display_caption String    @db.LongText
+  icon            String?   @db.VarChar(255)
+  user_id         Int    @db.UnsignedInt
+  created_at      DateTime? @db.Timestamp(0)
+  updated_at      DateTime? @db.Timestamp(0)
+  condition_id    String    @db.LongText
+  icon_2          String?   @db.LongText
+  users           users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "conditions_user_id_foreign")
+
+  @@index([user_id], map: "conditions_user_id_foreign")
+}
+
+model custom_webhook_urls {
+  id             Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id       Int    @db.UnsignedInt
+  new_task       String?   @db.Text
+  new_comment    String?   @db.Text
+  new_status     String?   @db.Text
+  new_priority   String?   @db.Text
+  new_tag        String?   @db.Text
+  new_email_task String?   @db.Text
+  new_user       String?   @db.Text
+  new_time_entry String?   @db.Text
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+  new_website    String?   @db.Text
+  is_website     Boolean   @default(false)
+  is_task        Boolean   @default(false)
+  is_comment     Boolean   @default(false)
+  is_status      Boolean   @default(false)
+  is_priority    Boolean   @default(false)
+  is_tag         Boolean   @default(false)
+  is_user        Boolean   @default(false)
+  is_time_entry  Boolean   @default(false)
+  is_email_task  Boolean   @default(false)
+  users          users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "custom_webhook_urls_user_id_foreign")
+
+  @@index([user_id], map: "custom_webhook_urls_user_id_foreign")
+}
+
+model email_responses {
+  id                 Int    @id @default(autoincrement()) @db.UnsignedInt
+  mailbox_id         Int
+  user_id            Int?   @db.UnsignedInt
+  task_id            Int
+  comment_id         Int?   @db.UnsignedInt
+  from_address       String?   @db.VarChar(255)
+  to_address         String?   @db.VarChar(255)
+  message_id         String?   @db.VarChar(255)
+  sender             String?   @db.VarChar(255)
+  recipient          String?   @db.VarChar(255)
+  attachments        Int?      @db.TinyInt
+  response_timestamp String?   @db.VarChar(255)
+  response_token     String?   @db.VarChar(255)
+  email_cc           String?   @db.VarChar(255)
+  in_replay_to       String?   @db.VarChar(255)
+  email_bcc          String?   @db.VarChar(255)
+  email_references   String?   @db.Text
+  signature          String?   @db.VarChar(255)
+  delivery_status    String?   @db.VarChar(20)
+  created_at         DateTime? @db.Timestamp(0)
+  updated_at         DateTime? @db.Timestamp(0)
+  comments           comments? @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "email_responses_comment_id_foreign")
+  users              users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "email_responses_user_id_foreign")
+
+  @@index([comment_id], map: "email_responses_comment_id_index")
+  @@index([user_id], map: "email_responses_user_id_index")
+}
+
+model failed_jobs {
+  id         Int   @id @default(autoincrement()) @db.UnsignedInt
+  connection String   @db.Text
+  queue      String   @db.Text
+  payload    String   @db.LongText
+  exception  String   @db.LongText
+  failed_at  DateTime @default(now()) @db.Timestamp(0)
+}
+
+model form_responses {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  form_id    Int?
+  response   String?   @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model forms {
+  id          Int    @id @default(autoincrement()) @db.UnsignedInt
+  title       String?   @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  content     String?   @db.VarChar(255)
+  user_id     Int?
+  admin_id    Int?
+  access      String?   @db.VarChar(255)
+  template    Int?
+  project_id  Int?
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+}
+
+model graphic_hotspots {
+  id                                             Int    @id @default(autoincrement()) @db.UnsignedInt
+  graphic_id                                     Int?   @db.UnsignedInt
+  screen                                         Int?   @db.UnsignedInt
+  link_to                                        String    @db.VarChar(100)
+  position                                       String?   @db.VarChar(100)
+  transition                                     String?   @db.VarChar(100)
+  width                                          Int?      @default(0)
+  height                                         Int?      @default(0)
+  pos_x                                          Int?      @default(0)
+  pos_y                                          Int?      @default(0)
+  offset_top                                     Int?      @default(0)
+  offset_bottom                                  Int?      @default(0)
+  offset_left                                    Int?      @default(0)
+  offset_right                                   Int?      @default(0)
+  position_vertical                              Int?      @default(0)
+  position_horizontal                            Int?      @default(0)
+  fix_position_overlay                           Boolean?  @default(false)
+  close_outside_click                            Boolean?  @default(true)
+  include_in_template                            Boolean?  @default(false)
+  created_at                                     DateTime? @db.Timestamp(0)
+  updated_at                                     DateTime? @db.Timestamp(0)
+  graphics_graphic_hotspots_graphic_idTographics graphics? @relation("graphic_hotspots_graphic_idTographics", fields: [graphic_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "graphic_hotspots_graphic_id_foreign")
+  graphics_graphic_hotspots_screenTographics     graphics? @relation("graphic_hotspots_screenTographics", fields: [screen], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "graphic_hotspots_screen_foreign")
+
+  @@index([graphic_id], map: "graphic_hotspots_graphic_id_index")
+  @@index([screen], map: "graphic_hotspots_screen_index")
+}
+
+model graphic_images {
+  id                Int    @id @default(autoincrement()) @db.UnsignedInt
+  graphic_id        Int    @db.UnsignedInt
+  version           String    @db.VarChar(100)
+  image             String    @db.Text
+  type              String?   @db.VarChar(100)
+  alt_text          String?   @db.VarChar(255)
+  image_title       String?   @db.VarChar(255)
+  image_caption     String?   @db.VarChar(255)
+  image_description String?   @db.Text
+  created_at        DateTime? @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
+  deleted_at        DateTime? @db.Timestamp(0)
+  graphics          graphics  @relation(fields: [graphic_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "graphic_images_graphic_id_foreign")
+
+  @@index([graphic_id], map: "graphic_images_graphic_id_foreign")
+}
+
+model graphics {
+  id                                                     Int             @id @default(autoincrement()) @db.UnsignedInt
+  site_id                                                Int?            @db.UnsignedInt
+  title                                                  String             @db.Text
+  description                                            String?            @db.Text
+  status                                                 Int?               @db.TinyInt
+  bg_color                                               String?            @db.VarChar(100)
+  deleted_at                                             DateTime?          @db.Timestamp(0)
+  created_at                                             DateTime?          @db.Timestamp(0)
+  updated_at                                             DateTime?          @db.Timestamp(0)
+  graphic_hotspots_graphic_hotspots_graphic_idTographics graphic_hotspots[] @relation("graphic_hotspots_graphic_idTographics")
+  graphic_hotspots_graphic_hotspots_screenTographics     graphic_hotspots[] @relation("graphic_hotspots_screenTographics")
+  graphic_images                                         graphic_images[]
+  sites                                                  sites?             @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "graphics_site_id_foreign")
+
+  @@index([site_id], map: "graphics_site_id_foreign")
+}
+
+model inbox_snippets {
+  id               Int           @id @default(autoincrement()) @db.UnsignedInt
+  snippet_id       Int?          @db.UnsignedInt
+  user_mail_box_id Int?          @db.UnsignedInt
+  created_at       DateTime?        @db.Timestamp(0)
+  updated_at       DateTime?        @db.Timestamp(0)
+  snippets         snippets?        @relation(fields: [snippet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "inbox_snippets_snippet_id_foreign")
+  user_mail_boxes  user_mail_boxes? @relation(fields: [user_mail_box_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "inbox_snippets_user_mail_box_id_foreign")
+
+  @@index([snippet_id], map: "inbox_snippets_snippet_id_index")
+  @@index([user_mail_box_id], map: "inbox_snippets_user_mail_box_id_index")
+}
+
+model incoming_call_back_u_r_l_s {
+  id                     Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id                Int    @db.UnsignedInt
+  new_task               String?   @db.Text
+  new_comment            String?   @db.Text
+  new_status_change      String?   @db.Text
+  new_priority_change    String?   @db.Text
+  new_tag                String?   @db.Text
+  new_user               String?   @db.Text
+  new_time_entry         String?   @db.Text
+  is_new_task            Boolean   @default(false)
+  is_new_comment         Boolean   @default(false)
+  is_new_status_change   Boolean   @default(false)
+  is_new_priority_change Boolean   @default(false)
+  is_new_tag             Boolean   @default(false)
+  is_new_user            Boolean   @default(false)
+  is_new_time_entry      Boolean   @default(false)
+  created_at             DateTime? @db.Timestamp(0)
+  updated_at             DateTime? @db.Timestamp(0)
+  new_note               String?   @db.Text
+  is_new_note            Boolean   @default(false)
+  users                  users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "incoming_call_back_u_r_l_s_user_id_foreign")
+
+  @@index([user_id], map: "incoming_call_back_u_r_l_s_user_id_foreign")
+}
+
+model jira_webhooks {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id    String?   @db.VarChar(255)
+  project_id String?   @db.VarChar(255)
+  webhook_id String?   @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model jobs {
+  id           Int @id @default(autoincrement()) @db.UnsignedInt
+  queue        String @db.VarChar(255)
+  payload      String @db.LongText
+  attempts     Int    @db.UnsignedTinyInt
+  reserved_at  Int?   @db.UnsignedInt
+  available_at Int    @db.UnsignedInt
+  created_at   Int    @db.UnsignedInt
+
+  @@index([queue], map: "jobs_queue_index")
+}
+
+model license_details {
+  id             Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id        Int?       @db.UnsignedInt
+  plan_id        Int?      @db.UnsignedInt
+  license_wpf_id Int    @db.UnsignedInt
+  license_key    String    @db.VarChar(255)
+  license_status String    @db.VarChar(255)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+  plans          plans?    @relation(fields: [plan_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "license_details_plan_id_foreign")
+  users          users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "license_details_user_id_foreign")
+
+  @@index([plan_id], map: "license_details_plan_id_index")
+  @@index([user_id], map: "license_details_user_id_foreign")
+  @@index([license_wpf_id], map: "license_wpf_id")
+  @@index([license_wpf_id], map: "license_wpf_id_2")
+  @@index([user_id], map: "user_id")
+  @@index([user_id], map: "user_id_2")
+}
+
+model main_wp_settings {
+  id              Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id         Int     @db.UnsignedInt
+  consumer_secret String?   @db.VarChar(255)
+  consumer_key    String?   @db.VarChar(255)
+  dashboard_url   String?   @db.VarChar(255)
+  created_at      DateTime? @db.Timestamp(0)
+  updated_at      DateTime? @db.Timestamp(0)
+  users           users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "main_wp_settings_user_id_foreign")
+
+  @@index([user_id], map: "main_wp_settings_user_id_foreign")
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+  migration String @db.VarChar(255)
+  batch     Int
+}
+
+model milestone_tags {
+  id              Int           @id @default(autoincrement()) @db.UnsignedInt
+  milestone_id    Int?          @db.UnsignedInt
+  name            String           @db.VarChar(255)
+  created_at      DateTime?        @db.Timestamp(0)
+  updated_at      DateTime?        @db.Timestamp(0)
+  site_milestones site_milestones? @relation(fields: [milestone_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "milestone_tags_milestone_id_foreign")
+
+  @@index([milestone_id], map: "milestone_tags_milestone_id_index")
+}
+
+model model_has_permissions {
+  permission_id Int      @db.UnsignedInt
+  model_type    String      @db.VarChar(255)
+  model_id      Int      @db.UnsignedInt
+  permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "model_has_permissions_permission_id_foreign")
+
+  @@id([permission_id, model_id, model_type])
+  @@index([model_id, model_type], map: "model_has_permissions_model_id_model_type_index")
+}
+
+model model_has_roles {
+  role_id    Int @db.UnsignedInt
+  model_type String @db.VarChar(255)
+  model_id   Int @db.UnsignedInt
+  roles      roles  @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "model_has_roles_role_id_foreign")
+
+  @@id([role_id, model_id, model_type])
+  @@index([model_id, model_type], map: "model_has_roles_model_id_model_type_index")
+}
+
+model notification_preference {
+  id                     Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id                Int?      @db.UnsignedInt
+  every_new_task         Boolean   @default(false)
+  every_new_comment      Boolean   @default(false)
+  every_status_change    Boolean   @default(false)
+  daily_report           Boolean   @default(false)
+  weekly_report          Boolean   @default(false)
+  created_at             DateTime? @db.Timestamp(0)
+  updated_at             DateTime? @db.Timestamp(0)
+  wpf_user_id            Int?
+  wpf_every_new_complete Boolean?  @default(false)
+  wpf_auto_daily_report  Boolean?  @default(false)
+  wpf_auto_weekly_report Boolean?  @default(false)
+
+  @@index([user_id], map: "notification_preference_user_id_foreign")
+}
+
+model oauth_access_tokens {
+  id         String    @id @db.VarChar(100)
+  user_id    Int?
+  client_id  Int       @db.UnsignedInt
+  name       String?   @db.VarChar(255)
+  scopes     String?   @db.Text
+  revoked    Boolean
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  expires_at DateTime? @db.DateTime(0)
+
+  @@index([user_id], map: "oauth_access_tokens_user_id_index")
+}
+
+model oauth_auth_codes {
+  id         String    @id @db.VarChar(100)
+  user_id    Int
+  client_id  Int       @db.UnsignedInt
+  scopes     String?   @db.Text
+  revoked    Boolean
+  expires_at DateTime? @db.DateTime(0)
+}
+
+model oauth_clients {
+  id                     Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id                Int?
+  name                   String    @db.VarChar(255)
+  secret                 String    @db.VarChar(100)
+  redirect               String    @db.Text
+  personal_access_client Boolean
+  password_client        Boolean
+  revoked                Boolean
+  created_at             DateTime? @db.Timestamp(0)
+  updated_at             DateTime? @db.Timestamp(0)
+
+  @@index([user_id], map: "oauth_clients_user_id_index")
+}
+
+model oauth_personal_access_clients {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  client_id  Int       @db.UnsignedInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+
+  @@index([client_id], map: "oauth_personal_access_clients_client_id_index")
+}
+
+model oauth_refresh_tokens {
+  id              String    @id @db.VarChar(100)
+  access_token_id String    @db.VarChar(100)
+  revoked         Boolean
+  expires_at      DateTime? @db.DateTime(0)
+
+  @@index([access_token_id], map: "oauth_refresh_tokens_access_token_id_index")
+}
+
+model outgoing_call_back_u_r_l_s {
+  id                     Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id                Int    @db.UnsignedInt
+  new_website            String?   @db.Text
+  new_task               String?   @db.Text
+  new_comment            String?   @db.Text
+  new_status_change      String?   @db.Text
+  new_priority_change    String?   @db.Text
+  new_tag                String?   @db.Text
+  new_user               String?   @db.Text
+  new_time_entry         String?   @db.Text
+  is_new_website         Boolean   @default(false)
+  is_new_task            Boolean   @default(false)
+  is_new_comment         Boolean   @default(false)
+  is_new_status_change   Boolean   @default(false)
+  is_new_priority_change Boolean   @default(false)
+  is_new_tag             Boolean   @default(false)
+  is_new_user            Boolean   @default(false)
+  is_new_time_entry      Boolean   @default(false)
+  created_at             DateTime? @db.Timestamp(0)
+  updated_at             DateTime? @db.Timestamp(0)
+  new_note               String?   @db.Text
+  is_new_note            Boolean   @default(false)
+  users                  users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "outgoing_call_back_u_r_l_s_user_id_foreign")
+
+  @@index([user_id], map: "outgoing_call_back_u_r_l_s_user_id_foreign")
+}
+
+model pages {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  site_id    Int?   @db.UnsignedInt
+  wp_id      Int    @db.UnsignedInt
+  name       String    @db.VarChar(255)
+  url        String?   @db.VarChar(255)
+  type       String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  is_approve Int?      @default(0)
+  sites      sites?    @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "pages_site_id_foreign")
+
+  @@index([site_id], map: "pages_site_id_foreign")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model password_resets {
+  email      String    @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+
+  @@index([email], map: "password_resets_email_index")
+  @@ignore
+}
+
+model permissions {
+  id                    Int                  @id @default(autoincrement()) @db.UnsignedInt
+  name                  String                  @db.VarChar(255)
+  guard_name            String                  @db.VarChar(255)
+  created_at            DateTime?               @db.Timestamp(0)
+  updated_at            DateTime?               @db.Timestamp(0)
+  model_has_permissions model_has_permissions[]
+  role_has_permissions  role_has_permissions[]
+
+  @@unique([name, guard_name], map: "permissions_name_guard_name_unique")
+}
+
+model plan_families {
+  id          Int    @id @default(autoincrement()) @db.UnsignedInt
+  name        String    @db.VarChar(255)
+  description String    @db.Text
+  rank        Int       @db.TinyInt
+  status      Boolean   @default(true)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  plans       plans[]
+}
+
+model plans {
+  id                               Int               @id @default(autoincrement()) @db.UnsignedInt
+  product_id                       Int
+  variation_id                     Int
+  title                            String            @db.VarChar(255)
+  family_id                        Int?           @db.UnsignedInt
+  cycle                            plans_cycle?
+  selling_price                    Decimal?          @db.Decimal(13, 2)
+  website_limit                    Int
+  storage_limit                    Int
+  user_limit                       Int
+  boards_enabled                   Boolean
+  integration_enabled              Boolean
+  whitelabel_enabled               Boolean
+  inbox_enabled                    Boolean
+  bottom_bar_enabled               Boolean           @default(true)
+  user_permissions                 Boolean           @default(true)
+  auto_reports                     Boolean           @default(true)
+  number_of_tasks                  Int               @default(-1)
+  internal_tasks                   Boolean           @default(true)
+  automation_usage                 Int?              @default(0)
+  client_interface_global_settings Boolean           @default(true)
+  automated_integrations           Boolean           @default(true)
+  native_integrations              Boolean           @default(true)
+  time_tracking                    Boolean           @default(true)
+  team_management                  Boolean           @default(true)
+  project_stages                   Boolean           @default(true)
+  task_center                      Boolean           @default(true)
+  edit_delete                      Boolean?          @default(true)
+  automation_enabled               Boolean?          @default(true)
+  more_graphic_tasks               Boolean?          @default(true)
+  versions_enabled                 Boolean?          @default(true)
+  hotspots_enabled                 Boolean?          @default(true)
+  approve_design_enabled           Boolean?          @default(true)
+  upsell_url                       String?           @db.Text
+  billed_yearly_text               String?           @db.VarChar(255)
+  short_description                String?           @db.Text
+  long_description                 String?           @db.LongText
+  is_active                        Boolean
+  is_old                           Boolean           @default(false)
+  status                           Boolean           @default(true)
+  created_at                       DateTime?         @db.Timestamp(0)
+  updated_at                       DateTime?         @db.Timestamp(0)
+  license_details                  license_details[]
+  plan_families                    plan_families?    @relation(fields: [family_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "plans_family_id_foreign")
+
+  @@index([family_id], map: "plans_family_id_index")
+}
+
+model projects {
+  id             Int    @id @default(autoincrement()) @db.UnsignedInt
+  name           String    @db.VarChar(255)
+  user_id        Int    @db.UnsignedInt
+  assigned_users String    @db.VarChar(255)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+
+  @@index([user_id], map: "index_projects_user_id")
+}
+
+model registration_token {
+  email      String    @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  invited_by Int    @db.UnsignedInt
+  name       String?   @db.VarChar(255)
+  role       String?   @db.VarChar(255)
+  first_name String?   @db.Text
+  last_name  String?   @db.Text
+
+  @@index([email], map: "registration_token_email_index")
+}
+
+model reset_password_token {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  email      String    @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+
+  @@index([email], map: "reset_password_token_email_index")
+}
+
+model role_has_permissions {
+  permission_id Int      @db.UnsignedInt
+  role_id       Int      @db.UnsignedInt
+  permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "role_has_permissions_permission_id_foreign")
+  roles         roles       @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "role_has_permissions_role_id_foreign")
+
+  @@id([permission_id, role_id])
+  @@index([role_id], map: "role_has_permissions_role_id_foreign")
+}
+
+model roles {
+  id                   Int                 @id @default(autoincrement()) @db.UnsignedInt
+  name                 String                 @db.VarChar(255)
+  guard_name           String                 @db.VarChar(255)
+  created_at           DateTime?              @db.Timestamp(0)
+  updated_at           DateTime?              @db.Timestamp(0)
+  model_has_roles      model_has_roles[]
+  role_has_permissions role_has_permissions[]
+
+  @@unique([name, guard_name], map: "roles_name_guard_name_unique")
+}
+
+model settings {
+  id                             Int    @id @default(autoincrement()) @db.UnsignedInt
+  created_at                     DateTime? @db.Timestamp(0)
+  updated_at                     DateTime? @db.Timestamp(0)
+  user_id                        Int?   @db.UnsignedInt
+  enabled_wpfeedback             Boolean   @default(true)
+  wpf_show_front_stikers         Boolean   @default(true)
+  wpf_allow_backend_commenting   Boolean   @default(false)
+  wpfeedback_font_awesome_script Boolean   @default(false)
+  delete_data_wpfeedback         Boolean   @default(false)
+  wpfeedback_logo                String?   @db.Text
+  wpfeedback_favicon             String?   @db.Text
+  wpfeedback_color               String?   @db.Text
+  wpf_tutorial_video             String?   @db.Text
+  wpf_minify_image               Boolean   @default(true)
+  wpfeedback_powered_by          Boolean   @default(false)
+  wpf_powered_link               String?   @db.VarChar(255)
+  email_wizard_setup_complete    Boolean?  @default(false)
+  wpf_from_email                 String?   @db.Text
+  wpf_from_email_mode            Boolean?  @default(true)
+  wpfeedback_more_emails         String?   @db.Text
+  wpf_every_new_task             Boolean   @default(true)
+  wpf_every_new_comment          Boolean   @default(true)
+  wpf_every_new_complete         Boolean   @default(true)
+  wpf_every_status_change        Boolean   @default(true)
+  wpf_daily_report               Boolean   @default(true)
+  wpf_weekly_report              Boolean   @default(true)
+  wpf_auto_daily_report          Boolean   @default(true)
+  wpf_auto_weekly_report         Boolean   @default(true)
+  wpf_enabled_compact_mode       Int       @default(0) @db.TinyInt
+  wpf_user_permissions           String?   @db.Text
+  wpf_integrations               String?   @db.Text
+  users                          users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "settings_user_id_foreign")
+
+  @@index([user_id], map: "settings_user_id_foreign")
+}
+
+model site_data {
+  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+  site_id      Int       @db.UnsignedInt
+  option_name  String    @db.VarChar(255)
+  option_value String?   @db.Text
+  created_at   DateTime? @db.Timestamp(0)
+  updated_at   DateTime? @db.Timestamp(0)
+
+  @@index([site_id], map: "site_data_site_id_index")
+}
+
+model site_items {
+  id            Int    @id @default(autoincrement()) @db.UnsignedInt
+  site_id       Int?   @db.UnsignedInt
+  user_id       Int?   @db.UnsignedInt
+  title         String?   @db.VarChar(255)
+  version       Int       @db.SmallInt
+  resource_path String    @db.Text
+  type          String    @db.VarChar(100)
+  alt_text      String    @db.VarChar(255)
+  caption       String    @db.VarChar(255)
+  deleted_at    DateTime? @db.Timestamp(0)
+  created_at    DateTime? @db.Timestamp(0)
+  updated_at    DateTime? @db.Timestamp(0)
+  sites         sites?    @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "site_items_site_id_foreign")
+  users         users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "site_items_user_id_foreign")
+
+  @@index([site_id], map: "site_items_site_id_index")
+  @@index([user_id], map: "site_items_user_id_index")
+}
+
+model site_milestones {
+  id             Int           @id @default(autoincrement()) @db.UnsignedInt
+  site_id        Int?          @db.UnsignedInt
+  user_id        Int?          @db.UnsignedInt
+  title          String?          @db.VarChar(255)
+  due_date_at    DateTime         @db.Date
+  due_time_at    DateTime         @db.Time(0)
+  completed_at   DateTime?        @db.DateTime(0)
+  status         Boolean
+  created_at     DateTime?        @db.Timestamp(0)
+  updated_at     DateTime?        @db.Timestamp(0)
+  milestone_tags milestone_tags[]
+  sites          sites?           @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "site_milestones_site_id_foreign")
+  users          users?           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "site_milestones_user_id_foreign")
+
+  @@index([site_id], map: "site_milestones_site_id_index")
+  @@index([user_id], map: "site_milestones_user_id_index")
+}
+
+model site_settings {
+  id                      Int    @id @default(autoincrement()) @db.UnsignedInt
+  site_id                 Int?   @db.UnsignedInt
+  enabled_collaboration   Boolean   @default(true)
+  enabled_global_settings Boolean   @default(false)
+  permissions             String?   @db.Text
+  notifications           String?   @db.Text
+  whitelabel              String?   @db.Text
+  created_at              DateTime? @db.Timestamp(0)
+  updated_at              DateTime? @db.Timestamp(0)
+  sites                   sites?    @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "site_settings_site_id_foreign")
+
+  @@index([site_id], map: "site_settings_site_id_index")
+}
+
+model site_user {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  site_id    Int?   @db.UnsignedInt
+  user_id    Int?   @db.UnsignedInt
+  role       String?   @db.VarChar(20)
+  sites      sites?    @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "site_user_site_id_foreign")
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "site_user_user_id_foreign")
+
+  @@index([site_id], map: "site_id")
+  @@index([site_id], map: "site_id_2")
+  @@index([site_id], map: "site_user_site_id_foreign")
+  @@index([user_id], map: "site_user_user_id_foreign")
+  @@index([user_id], map: "user_id")
+  @@index([user_id], map: "user_id_2")
+}
+
+model sites {
+  id                         Int                       @id @default(autoincrement()) @db.UnsignedInt
+  site_order                 Int?                      @db.UnsignedInt
+  created_at                 DateTime?                    @db.Timestamp(0)
+  updated_at                 DateTime?                    @db.Timestamp(0)
+  last_sync_at               DateTime?                    @db.DateTime(0)
+  name                       String                       @db.VarChar(255)
+  url                        String                       @db.VarChar(255)
+  image                      String?                      @db.Text
+  license_id                 Int?                      @db.UnsignedInt
+  user_id                    Int?                      @db.UnsignedInt
+  wpf_site_id                Int                       @db.UnsignedInt
+  type                       String?                      @db.VarChar(100)
+  favicon                    String?                      @db.Text
+  is_active                  Boolean                      @default(true)
+  project_id                 Int?                      @db.UnsignedInt
+  domain_id                  String?                      @db.Char(36)
+  invite_token               String?                      @db.VarChar(80)
+  status                     sites_status                 @default(Pending)
+  security_issues            String?                      @db.VarChar(255)
+  http_response_code         String?                      @db.VarChar(255)
+  sum_of_upgrades            String?                      @db.VarChar(255)
+  dashboard_url              String?                      @db.VarChar(255)
+  rocket_site_id             String?                      @db.LongText
+  godaddy_user_id            String?                      @db.LongText
+  website_care_url           String?                      @db.LongText
+  src                        String?                      @db.LongText
+  godaddy_username           String?                      @db.LongText
+  collaborator_invite_tokens collaborator_invite_tokens[]
+  graphics                   graphics[]
+  pages                      pages[]
+  site_items                 site_items[]
+  site_milestones            site_milestones[]
+  site_settings              site_settings[]
+  site_user                  site_user[]
+  users                      users?                       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "sites_user_id_foreign")
+  tags                       tags[]
+  tasks                      tasks[]
+  wpf_users                  wpf_users[]
+
+  @@index([project_id], map: "index_sites_project_id")
+  @@index([license_id], map: "license_id")
+  @@index([license_id], map: "license_id_2")
+  @@index([name], map: "name")
+  @@index([name], map: "name_2")
+  @@index([site_order], map: "site_order")
+  @@index([site_order], map: "site_order_2")
+  @@index([user_id], map: "sites_user_id_index")
+  @@index([wpf_site_id], map: "sites_wpf_site_id_index")
+  @@index([url], map: "url")
+  @@index([url], map: "url_2")
+}
+
+model slack_integration_settings {
+  id             Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id        Int    @db.UnsignedInt
+  new_task       Boolean   @default(false)
+  new_comment    Boolean   @default(false)
+  new_note       Boolean   @default(false)
+  new_status     Boolean   @default(false)
+  new_priority   Boolean   @default(false)
+  new_tag        Boolean   @default(false)
+  new_user       Boolean   @default(false)
+  new_time_entry Boolean   @default(false)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+  new_email_task Boolean   @default(false)
+  users          users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "slack_integration_settings_user_id_foreign")
+
+  @@index([user_id], map: "slack_integration_settings_user_id_foreign")
+}
+
+model slack_webhook_responses {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  log        String    @db.LongText
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model snippets {
+  id                               Int           @id @default(autoincrement()) @db.UnsignedInt
+  user_id                          Int?           @db.UnsignedInt
+  title                            String           @db.VarChar(255)
+  content                          String           @db.LongText
+  notes                            String?          @db.Text
+  updated_by                       Int?          @db.UnsignedInt
+  status                           Boolean          @default(true)
+  deleted_at                       DateTime?        @db.Timestamp(0)
+  created_at                       DateTime?        @db.Timestamp(0)
+  updated_at                       DateTime?        @db.Timestamp(0)
+  inbox_snippets                   inbox_snippets[]
+  users_snippets_updated_byTousers users?           @relation("snippets_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "snippets_updated_by_foreign")
+  users_snippets_user_idTousers    users?           @relation("snippets_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "snippets_user_id_foreign")
+
+  @@index([updated_by], map: "snippets_updated_by_index")
+  @@index([user_id], map: "snippets_user_id_index")
+}
+
+model sources {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  name       String    @db.VarChar(100)
+  reference  String?   @db.VarChar(255)
+  total_used Int    @default(0)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  users      users[]
+}
+
+model subscription_items {
+  id              Int    @id @default(autoincrement()) @db.UnsignedInt
+  subscription_id Int    @db.UnsignedInt
+  stripe_id       String    @db.VarChar(255)
+  stripe_plan     String    @db.VarChar(255)
+  quantity        Int?
+  created_at      DateTime? @db.Timestamp(0)
+  updated_at      DateTime? @db.Timestamp(0)
+
+  @@unique([subscription_id, stripe_plan], map: "subscription_items_subscription_id_stripe_plan_unique")
+  @@index([stripe_id], map: "subscription_items_stripe_id_index")
+}
+
+model subscriptions {
+  id                  Int                @id @default(autoincrement()) @db.UnsignedInt
+  user_id             Int?               @db.UnsignedInt
+  subscription_id     String?               @db.VarChar(100)
+  customer_id         String?               @db.VarChar(100)
+  billing_period      Int?                  @db.SmallInt
+  billing_period_unit Int?                  @db.SmallInt
+  started_at          String?               @db.VarChar(20)
+  next_billing_at     String?               @db.VarChar(20)
+  status              subscriptions_status?
+  created_at          DateTime?             @db.Timestamp(0)
+  updated_at          DateTime?             @db.Timestamp(0)
+  users               users?                @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "subscriptions_user_id_foreign")
+
+  @@index([user_id], map: "subscriptions_user_id_index")
+}
+
+model tags {
+  id              Int           @id @default(autoincrement()) @db.UnsignedInt
+  created_at      DateTime?        @db.Timestamp(0)
+  updated_at      DateTime?        @db.Timestamp(0)
+  site_id         Int?          @db.UnsignedInt
+  inbox_id        Int?          @db.UnsignedInt
+  tag             String?          @db.Text
+  slug            String?          @db.Text
+  user_mail_boxes user_mail_boxes? @relation(fields: [inbox_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tags_inbox_id_foreign")
+  sites           sites?           @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tags_site_id_foreign")
+  task_tags       task_tags[]
+
+  @@index([inbox_id], map: "tags_inbox_id_index")
+  @@index([site_id], map: "tags_site_id_foreign")
+}
+
+model task_orders {
+  id            Int    @id @default(autoincrement()) @db.UnsignedInt
+  task_id       Int    @db.UnsignedInt
+  user_id       Int    @db.UnsignedInt
+  task_status   String?   @db.Text
+  task_priority String?   @db.Text
+  position      Int    @db.UnsignedInt
+  is_status     Boolean   @default(true)
+  created_at    DateTime? @db.Timestamp(0)
+  updated_at    DateTime? @db.Timestamp(0)
+  tasks         tasks     @relation(fields: [task_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_orders_task_id_foreign")
+  users         users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "task_orders_user_id_foreign")
+
+  @@index([is_status], map: "is_status")
+  @@index([task_id], map: "task_id")
+  @@index([user_id], map: "user_id")
+}
+
+model task_statuses {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  name       String    @db.VarChar(255)
+  status     Int       @default(1) @db.TinyInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model task_tags {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  tag_id     Int?   @db.UnsignedInt
+  task_id    Int?   @db.UnsignedInt
+  tags       tags?     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "task_tags_tag_id_foreign")
+
+  @@index([tag_id], map: "task_tags_tag_id_foreign")
+  @@index([task_id], map: "task_tags_task_id_foreign")
+}
+
+model task_types {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  name       String    @db.VarChar(255)
+  status     Int       @default(1) @db.TinyInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model task_urgencies {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  name       String    @db.VarChar(255)
+  status     Int       @default(1) @db.TinyInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model tasks {
+  id                                Int        @id @default(autoincrement()) @db.UnsignedInt
+  wpf_task_id                       Int?       @db.UnsignedInt
+  site_id                           Int?       @db.UnsignedInt
+  graphic_id                        Int?       @db.UnsignedInt
+  task_config_author_browser        String?       @db.Text
+  task_priority                     String        @db.Text
+  task_status                       String        @db.Text
+  task_time                         String?       @db.Text
+  task_config_author_browserVersion String?       @db.Text
+  task_config_author_ipaddress      String?       @db.Text
+  task_config_author_browserOS      String?       @db.Text
+  task_config_author_name           String?       @db.Text
+  task_config_author_id             String?       @db.Text
+  task_config_author_resX           String?       @db.Text
+  task_config_author_resY           String?       @db.Text
+  task_title                        String?       @db.Text
+  task_page_url                     String?       @db.Text
+  task_page_title                   String?       @db.Text
+  task_comment_message              String?       @db.Text
+  task_element_path                 String?       @db.LongText
+  wpfb_task_bubble                  String?       @db.LongText
+  task_element_html                 String?       @db.Text
+  task_X                            String?       @db.Text
+  task_Y                            String?       @db.Text
+  task_elementX                     String?       @db.Text
+  task_elementY                     String?       @db.Text
+  task_relativeX                    String?       @db.Text
+  task_relativeY                    String?       @db.Text
+  task_notify_users                 String?       @db.Text
+  task_element_height               String?       @db.Text
+  task_element_width                String?       @db.Text
+  task_comment_id                   Int?
+  task_type                         String?       @db.Text
+  created_at                        DateTime?     @db.Timestamp(0)
+  updated_at                        DateTime?     @db.Timestamp(0)
+  is_admin_task                     Boolean       @default(false)
+  is_internal                       Boolean       @default(false)
+  wpf_task_url                      String?       @db.VarChar(500)
+  estimated_time                    String?       @db.VarChar(255)
+  spent_time                        String?       @db.VarChar(255)
+  notify_wp_feedback_users          String?       @db.VarChar(255)
+  responsible_user                  Int?
+  deleted_at                        DateTime?     @db.Timestamp(0)
+  task_tags                         String?       @db.Text
+  wpf_task_screenshot               String?       @db.Text
+  task_top                          String?       @db.Text
+  task_left                         String?       @db.Text
+  page_type                         String?       @db.Text
+  wpf_current_screen                String?       @db.Text
+  current_page_id                   String?       @db.Text
+  page_approved_at                  DateTime?     @db.Timestamp(0)
+  site_task_id                      Int?       @default(0) @db.UnsignedInt
+  is_sync                           Boolean       @default(false)
+  clickup_task_id                   String?       @db.VarChar(255)
+  asana_task_id                     String?       @db.VarChar(255)
+  asana_sync_task                   Boolean?      @default(false)
+  teamwork_task_id                  String?       @db.VarChar(255)
+  teamwork_sync_task                Boolean?      @default(false)
+  jira_task_id                      String?       @db.VarChar(255)
+  jira_sync_task                    Boolean       @default(false)
+  basecamp_task_id                  String?       @db.LongText
+  basecamp_sync_task                Boolean       @default(false)
+  basecamp_project_id               String?       @db.LongText
+  trello_task_id                    String?       @db.LongText
+  trello_sync_task                  Boolean       @default(false)
+  comments                          comments[]
+  task_orders                       task_orders[]
+  sites                             sites?        @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tasks_site_id_foreign")
+
+  @@index([graphic_id], map: "index_tasks_graphic_id")
+  @@index([site_id], map: "site_id")
+  @@index([site_id], map: "site_id_2")
+  @@index([task_comment_id], map: "task_comment_id")
+  @@index([task_comment_id], map: "task_comment_id_2")
+  @@index([site_id], map: "tasks_site_id_foreign")
+}
+
+model time_entries {
+  id                    Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id               Int    @db.UnsignedInt
+  site_id               Int    @db.UnsignedInt
+  task_id               Int    @db.UnsignedInt
+  spent_time            String?   @db.VarChar(255)
+  start_time            String?   @db.VarChar(255)
+  end_time              String?   @db.VarChar(255)
+  billable              Boolean   @default(false)
+  description           String?   @db.Text
+  logged                Boolean   @default(false)
+  running               Boolean   @default(false)
+  started_at_spent_time String?   @db.VarChar(255)
+  started_at            DateTime? @db.Timestamp(0)
+  created_at            DateTime? @db.Timestamp(0)
+  updated_at            DateTime? @db.Timestamp(0)
+  clickup_task_id       String?   @db.VarChar(255)
+  teamwork_timer_id     String?   @db.VarChar(255)
+}
+
+model time_tracked {
+  id             Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id        Int    @db.UnsignedInt
+  site_id        Int    @db.UnsignedInt
+  task_id        Int    @db.UnsignedInt
+  estimated_time String?   @db.VarChar(255)
+  spent_time     String?   @db.VarChar(255)
+  description    String?   @db.VarChar(255)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+}
+
+model trello_webhooks {
+  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id    String?   @db.VarChar(255)
+  list_id    String?   @db.VarChar(255)
+  webhook_id String?   @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model triggers {
+  id              Int    @id @default(autoincrement()) @db.UnsignedInt
+  name            String    @unique(map: "triggers_name_unique") @db.VarChar(255)
+  description     String?   @db.LongText
+  display_caption String    @db.LongText
+  icon            String?   @db.VarChar(255)
+  user_id         Int    @db.UnsignedInt
+  created_at      DateTime? @db.Timestamp(0)
+  updated_at      DateTime? @db.Timestamp(0)
+  trigger_id      String    @db.LongText
+  icon_2          String?   @db.LongText
+  users           users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "triggers_user_id_foreign")
+
+  @@index([user_id], map: "triggers_user_id_foreign")
+}
+
+model user_dns_records {
+  id               Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id          Int?   @db.UnsignedInt
+  domain_id        Int
+  provider_user_id Int
+  domain           String    @db.VarChar(255)
+  dns              String    @db.Text
+  valid            Boolean
+  deleted_at       DateTime? @db.Timestamp(0)
+  created_at       DateTime? @db.Timestamp(0)
+  updated_at       DateTime? @db.Timestamp(0)
+  users            users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_dns_records_user_id_foreign")
+
+  @@index([user_id], map: "user_dns_records_user_id_index")
+}
+
+model user_mail_boxes {
+  id              Int           @id @default(autoincrement()) @db.UnsignedInt
+  user_id         Int
+  from_name       String?          @db.VarChar(100)
+  inbox_email     String?
+  forward_email   String?
+  email_signature String?          @db.Text
+  verify_token    String?          @db.VarChar(100)
+  mxa_verified    Boolean?         @default(false)
+  mxb_verified    Boolean?         @default(false)
+  spf_verified    Boolean?         @default(false)
+  dkim_verified   Boolean?         @default(false)
+  status          Int?             @default(-1) @db.TinyInt
+  created_at      DateTime?        @db.Timestamp(0)
+  updated_at      DateTime?        @db.Timestamp(0)
+  inbox_snippets  inbox_snippets[]
+  tags            tags[]
+}
+
+model users {
+  id                                  Int                             @id @default(autoincrement()) @db.UnsignedInt
+  name                                String                             @db.VarChar(255)
+  email                               String                             @unique(map: "users_email_unique") @db.VarChar(255)
+  email_verified_at                   DateTime?                          @db.Timestamp(0)
+  password                            String                             @db.VarChar(255)
+  remember_token                      String?                            @db.VarChar(100)
+  created_at                          DateTime?                          @db.Timestamp(0)
+  updated_at                          DateTime?                          @db.Timestamp(0)
+  username                            String                             @unique(map: "users_username_unique") @db.VarChar(255)
+  role                                users_role?
+  wpfeedback_id                       Int?                            @db.UnsignedInt
+  admin_id                            Int?                            @db.UnsignedInt
+  add_to_website_default              Int                                @default(0) @db.TinyInt
+  avatar                              String?                            @db.Text
+  first_name                          String?                            @db.Text
+  last_name                           String?                            @db.Text
+  deleted_at                          DateTime?                          @db.Timestamp(0)
+  tour_enabled                        Boolean                            @default(true)
+  api_key                             String?                            @db.LongText
+  plan_id                             Int?                            @db.UnsignedInt
+  subscription_status                 String?                            @db.VarChar(20)
+  additional_websites                 Int?
+  additional_users                    Int?
+  additional_storage                  Int?
+  source_id                           Int?                            @db.UnsignedInt
+  webhook_token                       String?                            @db.LongText
+  clickup_token                       String?                            @db.LongText
+  team_id                             String?                            @db.VarChar(255)
+  space_id                            String?                            @db.VarChar(255)
+  clickup_webhook_secret              String?                            @db.VarChar(255)
+  clickup_webhook_url                 String?                            @db.VarChar(255)
+  slack_access_token                  String?                            @db.LongText
+  slack_incoming_webhook_url          String?                            @db.LongText
+  slackId                             String?                            @db.LongText
+  asana_token                         String?                            @db.VarChar(255)
+  asana_user_id                       String?                            @db.VarChar(255)
+  asana_workspace_id                  String?                            @db.VarChar(255)
+  asana_team_id                       String?                            @db.VarChar(255)
+  asana_webhook_url                   String?                            @db.VarChar(255)
+  teamwork_access_token               String?                            @db.VarChar(255)
+  teamwork_url                        String?                            @db.VarChar(255)
+  jira_refresh_token                  String?                            @db.LongText
+  jira_site_id                        String?                            @db.LongText
+  basecamp_refresh_token              String?                            @db.LongText
+  basecamp_base_url                   String?                            @db.VarChar(255)
+  basecamp_email                      String?                            @db.LongText
+  rocket_token                        String?                            @db.LongText
+  billing_id                          String?                            @db.VarChar(255)
+  card_brand                          String?                            @db.VarChar(255)
+  card_last_four                      String?                            @db.VarChar(4)
+  trial_ends_at                       DateTime?                          @db.Timestamp(0)
+  trello_refresh_token                String?                            @db.LongText
+  trello_user_id                      String?                            @db.LongText
+  instawp_api_key                     String?                            @db.LongText
+  actions                             actions[]
+  automatic_task_creation_settings    automatic_task_creation_settings[]
+  automation_workflows                automation_workflows[]
+  collaborator_invite_tokens          collaborator_invite_tokens[]
+  conditions                          conditions[]
+  custom_webhook_urls                 custom_webhook_urls[]
+  email_responses                     email_responses[]
+  incoming_call_back_u_r_l_s          incoming_call_back_u_r_l_s[]
+  license_details                     license_details[]
+  main_wp_settings                    main_wp_settings[]
+  outgoing_call_back_u_r_l_s          outgoing_call_back_u_r_l_s[]
+  settings                            settings[]
+  site_items                          site_items[]
+  site_milestones                     site_milestones[]
+  site_user                           site_user[]
+  sites                               sites[]
+  slack_integration_settings          slack_integration_settings[]
+  snippets_snippets_updated_byTousers snippets[]                         @relation("snippets_updated_byTousers")
+  snippets_snippets_user_idTousers    snippets[]                         @relation("snippets_user_idTousers")
+  subscriptions                       subscriptions[]
+  task_orders                         task_orders[]
+  triggers                            triggers[]
+  user_dns_records                    user_dns_records[]
+  sources                             sources?                           @relation(fields: [source_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_source_id_foreign")
+
+  @@index([source_id], map: "users_source_id_index")
+  @@index([billing_id], map: "users_stripe_id_index")
+}
+
+model webhook_calls {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  name       String    @db.VarChar(255)
+  payload    String?   @db.Text
+  exception  String?   @db.Text
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model wp_edd_license_activations {
+  site_id    Int  @id @default(autoincrement())
+  site_name  String  @db.VarChar(128)
+  license_id Int
+  activated  Boolean
+  is_local   Boolean
+
+  @@unique([site_name, license_id], map: "site_name")
+}
+
+model wpf_users {
+  id               Int    @id @default(autoincrement()) @db.UnsignedInt
+  wpf_id           Int?   @db.UnsignedInt
+  site_id          Int?   @db.UnsignedInt
+  wpf_display_name String    @db.VarChar(255)
+  wpf_name         String?   @db.VarChar(255)
+  wpf_email        String    @db.VarChar(255)
+  is_admin         Boolean   @default(false)
+  created_at       DateTime? @db.Timestamp(0)
+  updated_at       DateTime? @db.Timestamp(0)
+  role             String?   @db.VarChar(255)
+  first_name       String?   @db.VarChar(255)
+  last_name        String?   @db.VarChar(255)
+  sites            sites?    @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "wpf_users_site_id_foreign")
+
+  @@index([site_id], map: "wpf_users_site_id_foreign")
+}
+
+enum plans_cycle {
+  Monthly
+  Yearly
+  Daily
+  Weekly
+  Other
+}
+
+enum subscriptions_status {
+  future
+  in_trial
+  active
+  non_renewing
+  paused
+  cancelled
+}
+
+enum users_role {
+  admin
+  contributor
+  manager
+  collaborator
+}
+
+enum sites_status {
+  Pending
+  Wait
+  Active
+}
