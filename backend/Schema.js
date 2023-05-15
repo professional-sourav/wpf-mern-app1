@@ -32,8 +32,14 @@ const Schema = (0, apollo_server_core_1.gql) `
         notify_wp_feedback_users: String
     }
 
+    type AuthToken {
+        token: String!
+    }
+
     # handle user commands
     type Query {
+        login(email: String!, password: String!): AuthToken
+
         getAllusers: [User] # will return multiple Person instances
         getUser(id: Int): User # has an argument of 'id of type Integer.
 
