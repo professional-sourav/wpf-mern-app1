@@ -4,8 +4,7 @@ import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient();
 
-export const login = async (email: string, password: string) => {
-    
+export const login = async (email: string, password: string) => {    
 
     const user = await prisma.users.findFirst({
         where: {
@@ -15,11 +14,10 @@ export const login = async (email: string, password: string) => {
 
     if (user) {
 
-        var hash = user.password;
-        hash = hash?.replace(/^\$2y(.+)$/i, '$2a$1');
-        // console.log(password, hash, user?.password);
+        const hash = user.password;
+        const replaced_hash = hash?.replace(/^\$2y(.+)$/i, '$2a$1');
 
-        const passwordIsValid = await bcrypt.compare(password, hash);
+        const passwordIsValid = await bcrypt.compare(password, replaced_hash);
 
         if (passwordIsValid) {
 
@@ -33,10 +31,7 @@ export const login = async (email: string, password: string) => {
                 userData, 
                 process.env.JWT_SECRET as string, 
                 { expiresIn: '1h' },
-            )
-
-            console.log("Token:", token);
-            
+            )            
 
             return {token: token};
         }

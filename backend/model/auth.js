@@ -24,10 +24,9 @@ const login = (email, password) => __awaiter(void 0, void 0, void 0, function* (
         }
     });
     if (user) {
-        var hash = user.password;
-        hash = hash === null || hash === void 0 ? void 0 : hash.replace(/^\$2y(.+)$/i, '$2a$1');
-        // console.log(password, hash, user?.password);
-        const passwordIsValid = yield bcrypt_1.default.compare(password, hash);
+        const hash = user.password;
+        const replaced_hash = hash === null || hash === void 0 ? void 0 : hash.replace(/^\$2y(.+)$/i, '$2a$1');
+        const passwordIsValid = yield bcrypt_1.default.compare(password, replaced_hash);
         if (passwordIsValid) {
             const userData = {
                 id: user.id,
@@ -35,7 +34,6 @@ const login = (email, password) => __awaiter(void 0, void 0, void 0, function* (
                 email: user.email,
             };
             const token = jsonwebtoken_1.default.sign(userData, process.env.JWT_SECRET, { expiresIn: '1h' });
-            console.log("Token:", token);
             return { token: token };
         }
         return { token: "Invalid Password" };
