@@ -5,6 +5,8 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <div className='data-new-gr-c-s-check-loaded="14.1110.0'>
+      <App />
+    </div>
   </React.StrictMode>,
 )
