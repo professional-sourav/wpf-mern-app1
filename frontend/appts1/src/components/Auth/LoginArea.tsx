@@ -2,12 +2,20 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import SignInWithGoogle from './SignInWithGoogle'
 import { Formik, Form, Field } from 'formik'
-
-const handelOnSubmit = (values: any) => {
-    console.log(values)
-}
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { userLogin } from '../../features/auth/authSlice'
 
 const LoginArea = () => {
+
+    const { loading, error } = useSelector((state: any) => state.auth)
+    const dispatch = useDispatch()
+
+    const handelOnSubmit = (values: any) => {
+        console.log(values)
+        dispatch(userLogin(values))
+    }
+
     return (
         <Formik
             initialValues={{ email: '', password: '' }}
