@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./src/App";
 import Dashboard from "./src/components/pages/Dashboard";
 import Sites from "./src/components/pages/Sites";
@@ -10,6 +10,10 @@ export const router = createBrowserRouter([
         element: <App />,
         errorElement: <ErrorPage />,
         children: [
+            { 
+                index: true, 
+                element: <Navigate to="/sites" replace /> 
+            },
             {
                 path: "/dashboard",
                 element: <Dashboard />,
