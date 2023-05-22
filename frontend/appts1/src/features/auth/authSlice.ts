@@ -83,7 +83,6 @@ const authSlice = createSlice({
                     state.userInfo = userInfo;
                     state.success = true;
 
-
                     localStorage.setItem('token', token);
                     localStorage.setItem('userInfo', JSON.stringify(userInfo));
 
