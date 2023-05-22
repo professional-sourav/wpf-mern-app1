@@ -32,8 +32,15 @@ const Schema = (0, apollo_server_core_1.gql) `
         notify_wp_feedback_users: String
     }
 
+    type LoggedInUserData {
+        id: String!,
+        name: String!,
+        email: String!
+    }
+
     type AuthToken {
-        token: String!
+        token: String!,
+        userInfo: LoggedInUserData!
     }
 
     # handle user commands

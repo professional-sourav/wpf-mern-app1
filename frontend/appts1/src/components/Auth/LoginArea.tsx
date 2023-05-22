@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import SignInWithGoogle from './SignInWithGoogle'
 import { Formik, Form, Field } from 'formik'
 import { useSelector } from 'react-redux'
@@ -8,8 +8,17 @@ import { userLogin } from '../../features/auth/authSlice'
 
 const LoginArea = () => {
 
-    const { loading, error } = useSelector((state: any) => state.auth)
+    const { loading, success, userToken } = useSelector((state: any) => state.auth)
     const dispatch = useDispatch()
+    const navigate = useNavigate();
+
+    useEffect(() => {
+
+        if (userToken) {
+            navigate('/sites')
+        }
+
+    }, [loading, success])
 
     const handelOnSubmit = (values: any) => {
         console.log(values)

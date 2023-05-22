@@ -1,8 +1,21 @@
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import './App.css'
 import PageContent from './components/PageContent/PageContent'
 import Sidebar from './components/Sidebar/Sidebar'
+import { useNavigate } from 'react-router-dom'
 
 function App() {
+
+  const { userToken } = useSelector((state: any) => state.auth)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    console.log("User Token:", userToken);
+    if (!userToken) {
+      navigate('/login')
+    }
+  }, [userToken])
 
   return (
     <>

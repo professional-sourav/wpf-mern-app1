@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client"
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken'   
+import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient();
 
-export const login = async (email: string, password: string) => {    
+export const login = async (email: string, password: string) => {
 
     const user = await prisma.users.findFirst({
         where: {
@@ -30,14 +30,17 @@ export const login = async (email: string, password: string) => {
             }
 
             const token = jwt.sign(
-                userData, 
-                process.env.JWT_SECRET as string, 
+                userData,
+                process.env.JWT_SECRET as string,
                 { expiresIn: '1h' },
-            )            
+            )
 
-            return {token: token};
+            return {
+                token: token,
+                userInfo: userData
+            };
         }
-        
-        return {token: "Invalid Password"};
+
+        return { token: "Invalid Password" };
     }
 }

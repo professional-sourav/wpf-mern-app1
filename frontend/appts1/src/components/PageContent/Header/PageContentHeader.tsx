@@ -1,3 +1,4 @@
+import AuthDropDownMenu from '../../Auth/AuthDropDownMenu'
 import SearchForm from './SearchForm'
 import HeaderItems from './items/HeaderItems'
 
@@ -7,6 +8,7 @@ const PageContentHeader = () => {
       <div className="flex flex-grow items-center justify-between py-4 px-4 shadow-2 md:px-6 2xl:px-11">
         <SearchForm />
         <HeaderItems />
+        <AuthDropDownMenu />
       </div>
     </header>
   )

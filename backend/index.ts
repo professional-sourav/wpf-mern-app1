@@ -13,27 +13,27 @@ const port = process.env.PORT;
 app.use(express.json());
 
 app.get('/', (req: Request, res: Response) => {
-    res.send('Express + TypeScript Server');
+  res.send('Express + TypeScript Server');
 });
 
 async function startApolloServer(schema: any, resolvers: any) {
-    const app = express();
-    const httpServer = http.createServer(app);
-    const server = new ApolloServer({
-      typeDefs: schema,
-      resolvers,
-      //tell Express to attach GraphQL functionality to the server
-      plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-    }) as any;
-    await server.start(); //start the GraphQL server.
-    server.applyMiddleware({ app });
-    await new Promise<void>((resolve) =>
-      httpServer.listen({ port: 4000 }, resolve) //run the server on port 4000
-    );
-    console.log(`Server ready at http://localhost:4000${server.graphqlPath}`);
-  }
-  //in the end, run the server and pass in our Schema and Resolver.
-  startApolloServer(Schema, Resolvers);
+  const app = express();
+  const httpServer = http.createServer(app);
+  const server = new ApolloServer({
+    typeDefs: schema,
+    resolvers,
+    //tell Express to attach GraphQL functionality to the server
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  }) as any;
+  await server.start(); //start the GraphQL server.
+  server.applyMiddleware({ app });
+  await new Promise<void>((resolve) =>
+    httpServer.listen({ port: 4000 }, resolve) //run the server on port 4000
+  );
+  console.log(`Server ready at http://localhost:4000${server.graphqlPath}`);
+}
+//in the end, run the server and pass in our Schema and Resolver.
+startApolloServer(Schema, Resolvers);
 
 
 app.listen(port, () => {

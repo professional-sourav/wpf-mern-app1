@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { USER_LOGIN } from '../../graphql/query';
 
 export const userLogin = createAsyncThunk(
     'auth/login',
@@ -14,25 +13,36 @@ export const userLogin = createAsyncThunk(
         const response = await axios.post("http://localhost:4000/graphql", {
             query: `query Login($email: String!, $password: String!) {
                 login(email: $email, password: $password) {
-                    token
+                  token
+                  userInfo {
+                    id,
+                    email,
+                    name,
+                  }
                 }
-            }`,
+              }`,
             variables: {
                 email: loginData.email,
                 password: loginData.password
             },
         });
 
-
         return response;
     }
 );
 
+// initialize userTOken from the localstorage
+const userToken = localStorage.getItem('token')
+    ? localStorage.getItem('token') : null;
+
+const userInfo = localStorage.getItem('userInfo')
+    ? JSON.parse(localStorage.getItem('userInfo')) : null;
+
 const initialState = {
 
     loading: false,
-    userInfo: {}, // for user object
-    userToken: null, // for storing the JWT
+    userInfo, // for user object
+    userToken, // for storing the JWT
     error: null,
     success: false, // for monitoring the registration process.
 };
@@ -40,17 +50,50 @@ const initialState = {
 const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers: {},
+    reducers: {
+        logout: (state, action) => {
+            localStorage.removeItem('token');
+            state.loading = false;
+            state.userInfo = {};
+            state.userToken = null;
+            state.error = null;
+            state.success = false;
+        }
+    },
     extraReducers: {
         [userLogin.pending as any]: (state, action) => {
             state.loading = true;
             state.error = null;
         },
         [userLogin.fulfilled as any]: (state, action) => {
-            console.log(action.payload);
 
+            console.log(action.payload.headers);
+
+            state.loading = false;
+
+            const { data } = action.payload;
+
+            try {
+                state.userToken = data.data.login.token;
+                const token = data.data.login.token;
+
+                if (token) {
+                    const userInfo = data.data.login.userInfo;
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                    state.userInfo = userInfo;
+                    state.success = true;
+                } else {
+                    state.success = false;
+                }
+
+            } catch (error) {
+                state.success = false;
+                console.error(error);
+            }
         },
     }
 });
 
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

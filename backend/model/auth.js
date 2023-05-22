@@ -35,7 +35,10 @@ const login = (email, password) => __awaiter(void 0, void 0, void 0, function* (
                 email: user.email,
             };
             const token = jsonwebtoken_1.default.sign(userData, process.env.JWT_SECRET, { expiresIn: '1h' });
-            return { token: token };
+            return {
+                token: token,
+                userInfo: userData
+            };
         }
         return { token: "Invalid Password" };
     }
