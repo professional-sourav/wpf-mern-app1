@@ -13,19 +13,17 @@ exports.getSite = exports.getAllSites = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getAllSites = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("User ID: ", user_id);
     const allSites = yield prisma.sites.findMany({
         where: {
             user_id: user_id ? user_id : null
         },
-        take: 10,
         include: {
-            tasks: {
-                take: 10,
-                orderBy: {
-                    id: 'desc'
-                }
-            }
-        }
+            _count: {
+                select: { tasks: true },
+            },
+        },
+        take: 10,
     }).catch((err) => {
         console.log(err.message);
     });

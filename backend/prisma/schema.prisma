@@ -8,12 +8,12 @@ datasource db {
 }
 
 model actions {
-  id              Int    @id @default(autoincrement()) @db.UnsignedInt
+  id              Int       @id @default(autoincrement()) @db.UnsignedInt
   name            String    @unique(map: "actions_name_unique") @db.VarChar(255)
   description     String?   @db.LongText
   display_caption String    @db.LongText
   icon            String?   @db.VarChar(255)
-  user_id         Int    @db.UnsignedInt
+  user_id         Int       @db.UnsignedInt
   created_at      DateTime? @db.Timestamp(0)
   updated_at      DateTime? @db.Timestamp(0)
   action_id       String    @db.LongText
@@ -24,19 +24,19 @@ model actions {
 }
 
 model activity_log {
-  id            Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id       Int?   @db.UnsignedInt
+  id            Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id       Int?      @db.UnsignedInt
   guest_user_id String?   @db.VarChar(255)
-  site_id       Int?   @db.UnsignedInt
+  site_id       Int?      @db.UnsignedInt
   task_id       String?   @db.VarChar(255)
-  comment_id    Int?   @db.UnsignedInt
-  license_id    Int?   @db.UnsignedInt
+  comment_id    Int?      @db.UnsignedInt
+  license_id    Int?      @db.UnsignedInt
   title         String?   @db.Text
   description   String?   @db.Text
   type          String?   @db.Text
   type_status   String?   @db.VarChar(255)
   from_plugin   Boolean   @default(false)
-  job_id        Int?   @db.UnsignedInt
+  job_id        Int?      @db.UnsignedInt
   is_read       Boolean?  @default(false)
   spent_time    String?   @db.VarChar(255)
   created_at    DateTime? @db.Timestamp(0)
@@ -149,7 +149,7 @@ model admin_users {
 }
 
 model admins {
-  id                Int    @id @default(autoincrement()) @db.UnsignedInt
+  id                Int       @id @default(autoincrement()) @db.UnsignedInt
   name              String    @db.VarChar(255)
   email             String    @unique(map: "admins_email_unique") @db.VarChar(255)
   email_verified_at DateTime? @db.Timestamp(0)
@@ -160,8 +160,8 @@ model admins {
 }
 
 model automatic_task_creation_settings {
-  id                    Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id               Int    @db.UnsignedInt
+  id                    Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id               Int       @db.UnsignedInt
   clickup               Boolean   @default(false)
   slack                 Boolean   @default(false)
   asana                 Boolean   @default(false)
@@ -189,7 +189,7 @@ model automatic_task_creation_settings {
 }
 
 model automation_templates {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   trigger_id String    @db.LongText
   action_id  String    @db.LongText
   feature    Boolean   @default(false)
@@ -200,12 +200,12 @@ model automation_templates {
 }
 
 model automation_workflows {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   meta       Json
   status     Boolean   @default(true)
   created_at DateTime? @db.Timestamp(0)
   updated_at DateTime? @db.Timestamp(0)
-  user_id    Int    @db.UnsignedInt
+  user_id    Int       @db.UnsignedInt
   trigger_id String?   @db.LongText
   action_id  String?   @db.LongText
   users      users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "automation_workflows_user_id_foreign")
@@ -214,7 +214,7 @@ model automation_workflows {
 }
 
 model basecamp_webhooks {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   user_id    String?   @db.VarChar(255)
   project_id String?   @db.VarChar(255)
   webhook_id String?   @db.VarChar(255)
@@ -223,7 +223,7 @@ model basecamp_webhooks {
 }
 
 model block_emails {
-  id          Int    @id @default(autoincrement()) @db.UnsignedInt
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
   email       String
   description String?   @db.Text
   status      Boolean   @default(true)
@@ -232,10 +232,10 @@ model block_emails {
 }
 
 model collaborator_invite_tokens {
-  id          Int    @id @default(autoincrement()) @db.UnsignedInt
-  invited_by  Int?   @db.UnsignedInt
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  invited_by  Int?      @db.UnsignedInt
   sender_name String    @db.VarChar(255)
-  site_id     Int?   @db.UnsignedInt
+  site_id     Int?      @db.UnsignedInt
   name        String?   @db.VarChar(255)
   email       String    @db.Text
   token       String    @db.VarChar(70)
@@ -250,17 +250,17 @@ model collaborator_invite_tokens {
 }
 
 model comments {
-  id                  Int            @id @default(autoincrement()) @db.UnsignedInt
-  task_id             Int?           @db.UnsignedInt
-  comment_id          Int?           @db.UnsignedInt
+  id                  Int               @id @default(autoincrement()) @db.UnsignedInt
+  task_id             Int?              @db.UnsignedInt
+  comment_id          Int?              @db.UnsignedInt
   comment_content     String?           @db.LongText
   comment_date        DateTime?         @db.DateTime(0)
-  user_id             Int?           @db.UnsignedInt
+  user_id             Int?              @db.UnsignedInt
   created_at          DateTime?         @db.Timestamp(0)
   updated_at          DateTime?         @db.Timestamp(0)
   comment_type        String            @db.VarChar(255)
   is_note             Boolean           @default(false)
-  login_user_id       Int            @default(0) @db.UnsignedInt
+  login_user_id       Int               @default(0) @db.UnsignedInt
   is_log              Boolean           @default(false)
   wpf_user_id         Int?
   guest_author_name   String?           @db.VarChar(255)
@@ -287,12 +287,12 @@ model comments {
 }
 
 model conditions {
-  id              Int    @id @default(autoincrement()) @db.UnsignedInt
+  id              Int       @id @default(autoincrement()) @db.UnsignedInt
   name            String    @db.VarChar(255)
   description     String?   @db.LongText
   display_caption String    @db.LongText
   icon            String?   @db.VarChar(255)
-  user_id         Int    @db.UnsignedInt
+  user_id         Int       @db.UnsignedInt
   created_at      DateTime? @db.Timestamp(0)
   updated_at      DateTime? @db.Timestamp(0)
   condition_id    String    @db.LongText
@@ -303,8 +303,8 @@ model conditions {
 }
 
 model custom_webhook_urls {
-  id             Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id       Int    @db.UnsignedInt
+  id             Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id        Int       @db.UnsignedInt
   new_task       String?   @db.Text
   new_comment    String?   @db.Text
   new_status     String?   @db.Text
@@ -331,11 +331,11 @@ model custom_webhook_urls {
 }
 
 model email_responses {
-  id                 Int    @id @default(autoincrement()) @db.UnsignedInt
+  id                 Int       @id @default(autoincrement()) @db.UnsignedInt
   mailbox_id         Int
-  user_id            Int?   @db.UnsignedInt
+  user_id            Int?      @db.UnsignedInt
   task_id            Int
-  comment_id         Int?   @db.UnsignedInt
+  comment_id         Int?      @db.UnsignedInt
   from_address       String?   @db.VarChar(255)
   to_address         String?   @db.VarChar(255)
   message_id         String?   @db.VarChar(255)
@@ -360,7 +360,7 @@ model email_responses {
 }
 
 model failed_jobs {
-  id         Int   @id @default(autoincrement()) @db.UnsignedInt
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
   connection String   @db.Text
   queue      String   @db.Text
   payload    String   @db.LongText
@@ -369,7 +369,7 @@ model failed_jobs {
 }
 
 model form_responses {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   form_id    Int?
   response   String?   @db.VarChar(255)
   created_at DateTime? @db.Timestamp(0)
@@ -377,7 +377,7 @@ model form_responses {
 }
 
 model forms {
-  id          Int    @id @default(autoincrement()) @db.UnsignedInt
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
   title       String?   @db.VarChar(255)
   description String?   @db.VarChar(255)
   content     String?   @db.VarChar(255)
@@ -391,9 +391,9 @@ model forms {
 }
 
 model graphic_hotspots {
-  id                                             Int    @id @default(autoincrement()) @db.UnsignedInt
-  graphic_id                                     Int?   @db.UnsignedInt
-  screen                                         Int?   @db.UnsignedInt
+  id                                             Int       @id @default(autoincrement()) @db.UnsignedInt
+  graphic_id                                     Int?      @db.UnsignedInt
+  screen                                         Int?      @db.UnsignedInt
   link_to                                        String    @db.VarChar(100)
   position                                       String?   @db.VarChar(100)
   transition                                     String?   @db.VarChar(100)
@@ -420,8 +420,8 @@ model graphic_hotspots {
 }
 
 model graphic_images {
-  id                Int    @id @default(autoincrement()) @db.UnsignedInt
-  graphic_id        Int    @db.UnsignedInt
+  id                Int       @id @default(autoincrement()) @db.UnsignedInt
+  graphic_id        Int       @db.UnsignedInt
   version           String    @db.VarChar(100)
   image             String    @db.Text
   type              String?   @db.VarChar(100)
@@ -438,8 +438,8 @@ model graphic_images {
 }
 
 model graphics {
-  id                                                     Int             @id @default(autoincrement()) @db.UnsignedInt
-  site_id                                                Int?            @db.UnsignedInt
+  id                                                     Int                @id @default(autoincrement()) @db.UnsignedInt
+  site_id                                                Int?               @db.UnsignedInt
   title                                                  String             @db.Text
   description                                            String?            @db.Text
   status                                                 Int?               @db.TinyInt
@@ -456,9 +456,9 @@ model graphics {
 }
 
 model inbox_snippets {
-  id               Int           @id @default(autoincrement()) @db.UnsignedInt
-  snippet_id       Int?          @db.UnsignedInt
-  user_mail_box_id Int?          @db.UnsignedInt
+  id               Int              @id @default(autoincrement()) @db.UnsignedInt
+  snippet_id       Int?             @db.UnsignedInt
+  user_mail_box_id Int?             @db.UnsignedInt
   created_at       DateTime?        @db.Timestamp(0)
   updated_at       DateTime?        @db.Timestamp(0)
   snippets         snippets?        @relation(fields: [snippet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "inbox_snippets_snippet_id_foreign")
@@ -469,8 +469,8 @@ model inbox_snippets {
 }
 
 model incoming_call_back_u_r_l_s {
-  id                     Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id                Int    @db.UnsignedInt
+  id                     Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id                Int       @db.UnsignedInt
   new_task               String?   @db.Text
   new_comment            String?   @db.Text
   new_status_change      String?   @db.Text
@@ -495,7 +495,7 @@ model incoming_call_back_u_r_l_s {
 }
 
 model jira_webhooks {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   user_id    String?   @db.VarChar(255)
   project_id String?   @db.VarChar(255)
   webhook_id String?   @db.VarChar(255)
@@ -504,7 +504,7 @@ model jira_webhooks {
 }
 
 model jobs {
-  id           Int @id @default(autoincrement()) @db.UnsignedInt
+  id           Int    @id @default(autoincrement()) @db.UnsignedInt
   queue        String @db.VarChar(255)
   payload      String @db.LongText
   attempts     Int    @db.UnsignedTinyInt
@@ -516,10 +516,10 @@ model jobs {
 }
 
 model license_details {
-  id             Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id        Int?       @db.UnsignedInt
+  id             Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id        Int?      @db.UnsignedInt
   plan_id        Int?      @db.UnsignedInt
-  license_wpf_id Int    @db.UnsignedInt
+  license_wpf_id Int       @db.UnsignedInt
   license_key    String    @db.VarChar(255)
   license_status String    @db.VarChar(255)
   created_at     DateTime? @db.Timestamp(0)
@@ -536,8 +536,8 @@ model license_details {
 }
 
 model main_wp_settings {
-  id              Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id         Int     @db.UnsignedInt
+  id              Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id         Int       @db.UnsignedInt
   consumer_secret String?   @db.VarChar(255)
   consumer_key    String?   @db.VarChar(255)
   dashboard_url   String?   @db.VarChar(255)
@@ -555,8 +555,8 @@ model migrations {
 }
 
 model milestone_tags {
-  id              Int           @id @default(autoincrement()) @db.UnsignedInt
-  milestone_id    Int?          @db.UnsignedInt
+  id              Int              @id @default(autoincrement()) @db.UnsignedInt
+  milestone_id    Int?             @db.UnsignedInt
   name            String           @db.VarChar(255)
   created_at      DateTime?        @db.Timestamp(0)
   updated_at      DateTime?        @db.Timestamp(0)
@@ -566,9 +566,9 @@ model milestone_tags {
 }
 
 model model_has_permissions {
-  permission_id Int      @db.UnsignedInt
+  permission_id Int         @db.UnsignedInt
   model_type    String      @db.VarChar(255)
-  model_id      Int      @db.UnsignedInt
+  model_id      Int         @db.UnsignedInt
   permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "model_has_permissions_permission_id_foreign")
 
   @@id([permission_id, model_id, model_type])
@@ -576,9 +576,9 @@ model model_has_permissions {
 }
 
 model model_has_roles {
-  role_id    Int @db.UnsignedInt
+  role_id    Int    @db.UnsignedInt
   model_type String @db.VarChar(255)
-  model_id   Int @db.UnsignedInt
+  model_id   Int    @db.UnsignedInt
   roles      roles  @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "model_has_roles_role_id_foreign")
 
   @@id([role_id, model_id, model_type])
@@ -586,7 +586,7 @@ model model_has_roles {
 }
 
 model notification_preference {
-  id                     Int    @id @default(autoincrement()) @db.UnsignedInt
+  id                     Int       @id @default(autoincrement()) @db.UnsignedInt
   user_id                Int?      @db.UnsignedInt
   every_new_task         Boolean   @default(false)
   every_new_comment      Boolean   @default(false)
@@ -660,8 +660,8 @@ model oauth_refresh_tokens {
 }
 
 model outgoing_call_back_u_r_l_s {
-  id                     Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id                Int    @db.UnsignedInt
+  id                     Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id                Int       @db.UnsignedInt
   new_website            String?   @db.Text
   new_task               String?   @db.Text
   new_comment            String?   @db.Text
@@ -688,9 +688,9 @@ model outgoing_call_back_u_r_l_s {
 }
 
 model pages {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
-  site_id    Int?   @db.UnsignedInt
-  wp_id      Int    @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  site_id    Int?      @db.UnsignedInt
+  wp_id      Int       @db.UnsignedInt
   name       String    @db.VarChar(255)
   url        String?   @db.VarChar(255)
   type       String    @db.VarChar(255)
@@ -713,7 +713,7 @@ model password_resets {
 }
 
 model permissions {
-  id                    Int                  @id @default(autoincrement()) @db.UnsignedInt
+  id                    Int                     @id @default(autoincrement()) @db.UnsignedInt
   name                  String                  @db.VarChar(255)
   guard_name            String                  @db.VarChar(255)
   created_at            DateTime?               @db.Timestamp(0)
@@ -725,7 +725,7 @@ model permissions {
 }
 
 model plan_families {
-  id          Int    @id @default(autoincrement()) @db.UnsignedInt
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
   name        String    @db.VarChar(255)
   description String    @db.Text
   rank        Int       @db.TinyInt
@@ -740,7 +740,7 @@ model plans {
   product_id                       Int
   variation_id                     Int
   title                            String            @db.VarChar(255)
-  family_id                        Int?           @db.UnsignedInt
+  family_id                        Int?              @db.UnsignedInt
   cycle                            plans_cycle?
   selling_price                    Decimal?          @db.Decimal(13, 2)
   website_limit                    Int
@@ -785,9 +785,9 @@ model plans {
 }
 
 model projects {
-  id             Int    @id @default(autoincrement()) @db.UnsignedInt
+  id             Int       @id @default(autoincrement()) @db.UnsignedInt
   name           String    @db.VarChar(255)
-  user_id        Int    @db.UnsignedInt
+  user_id        Int       @db.UnsignedInt
   assigned_users String    @db.VarChar(255)
   created_at     DateTime? @db.Timestamp(0)
   updated_at     DateTime? @db.Timestamp(0)
@@ -799,8 +799,8 @@ model registration_token {
   email      String    @db.VarChar(255)
   token      String    @db.VarChar(255)
   created_at DateTime? @db.Timestamp(0)
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
-  invited_by Int    @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  invited_by Int       @db.UnsignedInt
   name       String?   @db.VarChar(255)
   role       String?   @db.VarChar(255)
   first_name String?   @db.Text
@@ -810,7 +810,7 @@ model registration_token {
 }
 
 model reset_password_token {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   email      String    @db.VarChar(255)
   token      String    @db.VarChar(255)
   created_at DateTime? @db.Timestamp(0)
@@ -820,8 +820,8 @@ model reset_password_token {
 }
 
 model role_has_permissions {
-  permission_id Int      @db.UnsignedInt
-  role_id       Int      @db.UnsignedInt
+  permission_id Int         @db.UnsignedInt
+  role_id       Int         @db.UnsignedInt
   permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "role_has_permissions_permission_id_foreign")
   roles         roles       @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "role_has_permissions_role_id_foreign")
 
@@ -830,7 +830,7 @@ model role_has_permissions {
 }
 
 model roles {
-  id                   Int                 @id @default(autoincrement()) @db.UnsignedInt
+  id                   Int                    @id @default(autoincrement()) @db.UnsignedInt
   name                 String                 @db.VarChar(255)
   guard_name           String                 @db.VarChar(255)
   created_at           DateTime?              @db.Timestamp(0)
@@ -842,10 +842,10 @@ model roles {
 }
 
 model settings {
-  id                             Int    @id @default(autoincrement()) @db.UnsignedInt
+  id                             Int       @id @default(autoincrement()) @db.UnsignedInt
   created_at                     DateTime? @db.Timestamp(0)
   updated_at                     DateTime? @db.Timestamp(0)
-  user_id                        Int?   @db.UnsignedInt
+  user_id                        Int?      @db.UnsignedInt
   enabled_wpfeedback             Boolean   @default(true)
   wpf_show_front_stikers         Boolean   @default(true)
   wpf_allow_backend_commenting   Boolean   @default(false)
@@ -879,7 +879,7 @@ model settings {
 }
 
 model site_data {
-  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
   site_id      Int       @db.UnsignedInt
   option_name  String    @db.VarChar(255)
   option_value String?   @db.Text
@@ -890,9 +890,9 @@ model site_data {
 }
 
 model site_items {
-  id            Int    @id @default(autoincrement()) @db.UnsignedInt
-  site_id       Int?   @db.UnsignedInt
-  user_id       Int?   @db.UnsignedInt
+  id            Int       @id @default(autoincrement()) @db.UnsignedInt
+  site_id       Int?      @db.UnsignedInt
+  user_id       Int?      @db.UnsignedInt
   title         String?   @db.VarChar(255)
   version       Int       @db.SmallInt
   resource_path String    @db.Text
@@ -910,9 +910,9 @@ model site_items {
 }
 
 model site_milestones {
-  id             Int           @id @default(autoincrement()) @db.UnsignedInt
-  site_id        Int?          @db.UnsignedInt
-  user_id        Int?          @db.UnsignedInt
+  id             Int              @id @default(autoincrement()) @db.UnsignedInt
+  site_id        Int?             @db.UnsignedInt
+  user_id        Int?             @db.UnsignedInt
   title          String?          @db.VarChar(255)
   due_date_at    DateTime         @db.Date
   due_time_at    DateTime         @db.Time(0)
@@ -929,8 +929,8 @@ model site_milestones {
 }
 
 model site_settings {
-  id                      Int    @id @default(autoincrement()) @db.UnsignedInt
-  site_id                 Int?   @db.UnsignedInt
+  id                      Int       @id @default(autoincrement()) @db.UnsignedInt
+  site_id                 Int?      @db.UnsignedInt
   enabled_collaboration   Boolean   @default(true)
   enabled_global_settings Boolean   @default(false)
   permissions             String?   @db.Text
@@ -944,11 +944,11 @@ model site_settings {
 }
 
 model site_user {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  site_id    Int?   @db.UnsignedInt
-  user_id    Int?   @db.UnsignedInt
+  site_id    Int?      @db.UnsignedInt
+  user_id    Int?      @db.UnsignedInt
   role       String?   @db.VarChar(20)
   sites      sites?    @relation(fields: [site_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "site_user_site_id_foreign")
   users      users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "site_user_user_id_foreign")
@@ -962,21 +962,21 @@ model site_user {
 }
 
 model sites {
-  id                         Int                       @id @default(autoincrement()) @db.UnsignedInt
-  site_order                 Int?                      @db.UnsignedInt
+  id                         Int                          @id @default(autoincrement()) @db.UnsignedInt
+  site_order                 Int?                         @db.UnsignedInt
   created_at                 DateTime?                    @db.Timestamp(0)
   updated_at                 DateTime?                    @db.Timestamp(0)
   last_sync_at               DateTime?                    @db.DateTime(0)
   name                       String                       @db.VarChar(255)
   url                        String                       @db.VarChar(255)
   image                      String?                      @db.Text
-  license_id                 Int?                      @db.UnsignedInt
-  user_id                    Int?                      @db.UnsignedInt
-  wpf_site_id                Int                       @db.UnsignedInt
+  license_id                 Int?                         @db.UnsignedInt
+  user_id                    Int?                         @db.UnsignedInt
+  wpf_site_id                Int                          @db.UnsignedInt
   type                       String?                      @db.VarChar(100)
   favicon                    String?                      @db.Text
   is_active                  Boolean                      @default(true)
-  project_id                 Int?                      @db.UnsignedInt
+  project_id                 Int?                         @db.UnsignedInt
   domain_id                  String?                      @db.Char(36)
   invite_token               String?                      @db.VarChar(80)
   status                     sites_status                 @default(Pending)
@@ -996,10 +996,11 @@ model sites {
   site_milestones            site_milestones[]
   site_settings              site_settings[]
   site_user                  site_user[]
-  users                      users?                       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "sites_user_id_foreign")
+  user                       users?                       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "sites_user_id_foreign")
   tags                       tags[]
   tasks                      tasks[]
   wpf_users                  wpf_users[]
+  taskCount                  Int?                         @default(0)
 
   @@index([project_id], map: "index_sites_project_id")
   @@index([license_id], map: "license_id")
@@ -1015,8 +1016,8 @@ model sites {
 }
 
 model slack_integration_settings {
-  id             Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id        Int    @db.UnsignedInt
+  id             Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id        Int       @db.UnsignedInt
   new_task       Boolean   @default(false)
   new_comment    Boolean   @default(false)
   new_note       Boolean   @default(false)
@@ -1034,19 +1035,19 @@ model slack_integration_settings {
 }
 
 model slack_webhook_responses {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   log        String    @db.LongText
   created_at DateTime? @db.Timestamp(0)
   updated_at DateTime? @db.Timestamp(0)
 }
 
 model snippets {
-  id                               Int           @id @default(autoincrement()) @db.UnsignedInt
-  user_id                          Int?           @db.UnsignedInt
+  id                               Int              @id @default(autoincrement()) @db.UnsignedInt
+  user_id                          Int?             @db.UnsignedInt
   title                            String           @db.VarChar(255)
   content                          String           @db.LongText
   notes                            String?          @db.Text
-  updated_by                       Int?          @db.UnsignedInt
+  updated_by                       Int?             @db.UnsignedInt
   status                           Boolean          @default(true)
   deleted_at                       DateTime?        @db.Timestamp(0)
   created_at                       DateTime?        @db.Timestamp(0)
@@ -1060,18 +1061,18 @@ model snippets {
 }
 
 model sources {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   name       String    @db.VarChar(100)
   reference  String?   @db.VarChar(255)
-  total_used Int    @default(0)
+  total_used Int       @default(0)
   created_at DateTime? @db.Timestamp(0)
   updated_at DateTime? @db.Timestamp(0)
   users      users[]
 }
 
 model subscription_items {
-  id              Int    @id @default(autoincrement()) @db.UnsignedInt
-  subscription_id Int    @db.UnsignedInt
+  id              Int       @id @default(autoincrement()) @db.UnsignedInt
+  subscription_id Int       @db.UnsignedInt
   stripe_id       String    @db.VarChar(255)
   stripe_plan     String    @db.VarChar(255)
   quantity        Int?
@@ -1083,8 +1084,8 @@ model subscription_items {
 }
 
 model subscriptions {
-  id                  Int                @id @default(autoincrement()) @db.UnsignedInt
-  user_id             Int?               @db.UnsignedInt
+  id                  Int                   @id @default(autoincrement()) @db.UnsignedInt
+  user_id             Int?                  @db.UnsignedInt
   subscription_id     String?               @db.VarChar(100)
   customer_id         String?               @db.VarChar(100)
   billing_period      Int?                  @db.SmallInt
@@ -1100,11 +1101,11 @@ model subscriptions {
 }
 
 model tags {
-  id              Int           @id @default(autoincrement()) @db.UnsignedInt
+  id              Int              @id @default(autoincrement()) @db.UnsignedInt
   created_at      DateTime?        @db.Timestamp(0)
   updated_at      DateTime?        @db.Timestamp(0)
-  site_id         Int?          @db.UnsignedInt
-  inbox_id        Int?          @db.UnsignedInt
+  site_id         Int?             @db.UnsignedInt
+  inbox_id        Int?             @db.UnsignedInt
   tag             String?          @db.Text
   slug            String?          @db.Text
   user_mail_boxes user_mail_boxes? @relation(fields: [inbox_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tags_inbox_id_foreign")
@@ -1116,12 +1117,12 @@ model tags {
 }
 
 model task_orders {
-  id            Int    @id @default(autoincrement()) @db.UnsignedInt
-  task_id       Int    @db.UnsignedInt
-  user_id       Int    @db.UnsignedInt
+  id            Int       @id @default(autoincrement()) @db.UnsignedInt
+  task_id       Int       @db.UnsignedInt
+  user_id       Int       @db.UnsignedInt
   task_status   String?   @db.Text
   task_priority String?   @db.Text
-  position      Int    @db.UnsignedInt
+  position      Int       @db.UnsignedInt
   is_status     Boolean   @default(true)
   created_at    DateTime? @db.Timestamp(0)
   updated_at    DateTime? @db.Timestamp(0)
@@ -1134,7 +1135,7 @@ model task_orders {
 }
 
 model task_statuses {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   name       String    @db.VarChar(255)
   status     Int       @default(1) @db.TinyInt
   created_at DateTime? @db.Timestamp(0)
@@ -1142,11 +1143,11 @@ model task_statuses {
 }
 
 model task_tags {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   created_at DateTime? @db.Timestamp(0)
   updated_at DateTime? @db.Timestamp(0)
-  tag_id     Int?   @db.UnsignedInt
-  task_id    Int?   @db.UnsignedInt
+  tag_id     Int?      @db.UnsignedInt
+  task_id    Int?      @db.UnsignedInt
   tags       tags?     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "task_tags_tag_id_foreign")
 
   @@index([tag_id], map: "task_tags_tag_id_foreign")
@@ -1154,7 +1155,7 @@ model task_tags {
 }
 
 model task_types {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   name       String    @db.VarChar(255)
   status     Int       @default(1) @db.TinyInt
   created_at DateTime? @db.Timestamp(0)
@@ -1162,7 +1163,7 @@ model task_types {
 }
 
 model task_urgencies {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   name       String    @db.VarChar(255)
   status     Int       @default(1) @db.TinyInt
   created_at DateTime? @db.Timestamp(0)
@@ -1170,10 +1171,10 @@ model task_urgencies {
 }
 
 model tasks {
-  id                                Int        @id @default(autoincrement()) @db.UnsignedInt
-  wpf_task_id                       Int?       @db.UnsignedInt
-  site_id                           Int?       @db.UnsignedInt
-  graphic_id                        Int?       @db.UnsignedInt
+  id                                Int           @id @default(autoincrement()) @db.UnsignedInt
+  wpf_task_id                       Int?          @db.UnsignedInt
+  site_id                           Int?          @db.UnsignedInt
+  graphic_id                        Int?          @db.UnsignedInt
   task_config_author_browser        String?       @db.Text
   task_priority                     String        @db.Text
   task_status                       String        @db.Text
@@ -1198,7 +1199,7 @@ model tasks {
   task_elementY                     String?       @db.Text
   task_relativeX                    String?       @db.Text
   task_relativeY                    String?       @db.Text
-  task_notify_users                 String?       @db.Text @default("null")
+  task_notify_users                 String?       @default("null") @db.Text
   task_element_height               String?       @db.Text
   task_element_width                String?       @db.Text
   task_comment_id                   Int?
@@ -1210,7 +1211,7 @@ model tasks {
   wpf_task_url                      String?       @db.VarChar(500)
   estimated_time                    String?       @db.VarChar(255)
   spent_time                        String?       @db.VarChar(255)
-  notify_wp_feedback_users          String?       @db.VarChar(255) @default("null")
+  notify_wp_feedback_users          String?       @default("null") @db.VarChar(255)
   responsible_user                  Int?
   deleted_at                        DateTime?     @db.Timestamp(0)
   task_tags                         String?       @db.Text
@@ -1221,7 +1222,7 @@ model tasks {
   wpf_current_screen                String?       @db.Text
   current_page_id                   String?       @db.Text
   page_approved_at                  DateTime?     @db.Timestamp(0)
-  site_task_id                      Int?       @default(0) @db.UnsignedInt
+  site_task_id                      Int?          @default(0) @db.UnsignedInt
   is_sync                           Boolean       @default(false)
   clickup_task_id                   String?       @db.VarChar(255)
   asana_task_id                     String?       @db.VarChar(255)
@@ -1248,10 +1249,10 @@ model tasks {
 }
 
 model time_entries {
-  id                    Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id               Int    @db.UnsignedInt
-  site_id               Int    @db.UnsignedInt
-  task_id               Int    @db.UnsignedInt
+  id                    Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id               Int       @db.UnsignedInt
+  site_id               Int       @db.UnsignedInt
+  task_id               Int       @db.UnsignedInt
   spent_time            String?   @db.VarChar(255)
   start_time            String?   @db.VarChar(255)
   end_time              String?   @db.VarChar(255)
@@ -1268,10 +1269,10 @@ model time_entries {
 }
 
 model time_tracked {
-  id             Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id        Int    @db.UnsignedInt
-  site_id        Int    @db.UnsignedInt
-  task_id        Int    @db.UnsignedInt
+  id             Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id        Int       @db.UnsignedInt
+  site_id        Int       @db.UnsignedInt
+  task_id        Int       @db.UnsignedInt
   estimated_time String?   @db.VarChar(255)
   spent_time     String?   @db.VarChar(255)
   description    String?   @db.VarChar(255)
@@ -1280,7 +1281,7 @@ model time_tracked {
 }
 
 model trello_webhooks {
-  id         Int    @id @default(autoincrement()) @db.UnsignedInt
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
   user_id    String?   @db.VarChar(255)
   list_id    String?   @db.VarChar(255)
   webhook_id String?   @db.VarChar(255)
@@ -1289,12 +1290,12 @@ model trello_webhooks {
 }
 
 model triggers {
-  id              Int    @id @default(autoincrement()) @db.UnsignedInt
+  id              Int       @id @default(autoincrement()) @db.UnsignedInt
   name            String    @unique(map: "triggers_name_unique") @db.VarChar(255)
   description     String?   @db.LongText
   display_caption String    @db.LongText
   icon            String?   @db.VarChar(255)
-  user_id         Int    @db.UnsignedInt
+  user_id         Int       @db.UnsignedInt
   created_at      DateTime? @db.Timestamp(0)
   updated_at      DateTime? @db.Timestamp(0)
   trigger_id      String    @db.LongText
@@ -1305,8 +1306,8 @@ model triggers {
 }
 
 model user_dns_records {
-  id               Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id          Int?   @db.UnsignedInt
+  id               Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id          Int?      @db.UnsignedInt
   domain_id        Int
   provider_user_id Int
   domain           String    @db.VarChar(255)
@@ -1321,7 +1322,7 @@ model user_dns_records {
 }
 
 model user_mail_boxes {
-  id              Int           @id @default(autoincrement()) @db.UnsignedInt
+  id              Int              @id @default(autoincrement()) @db.UnsignedInt
   user_id         Int
   from_name       String?          @db.VarChar(100)
   inbox_email     String?
@@ -1340,7 +1341,7 @@ model user_mail_boxes {
 }
 
 model users {
-  id                                  Int                             @id @default(autoincrement()) @db.UnsignedInt
+  id                                  Int                                @id @default(autoincrement()) @db.UnsignedInt
   name                                String                             @db.VarChar(255)
   email                               String                             @unique(map: "users_email_unique") @db.VarChar(255)
   email_verified_at                   DateTime?                          @db.Timestamp(0)
@@ -1350,8 +1351,8 @@ model users {
   updated_at                          DateTime?                          @db.Timestamp(0)
   username                            String                             @unique(map: "users_username_unique") @db.VarChar(255)
   role                                users_role?
-  wpfeedback_id                       Int?                            @db.UnsignedInt
-  admin_id                            Int?                            @db.UnsignedInt
+  wpfeedback_id                       Int?                               @db.UnsignedInt
+  admin_id                            Int?                               @db.UnsignedInt
   add_to_website_default              Int                                @default(0) @db.TinyInt
   avatar                              String?                            @db.Text
   first_name                          String?                            @db.Text
@@ -1359,12 +1360,12 @@ model users {
   deleted_at                          DateTime?                          @db.Timestamp(0)
   tour_enabled                        Boolean                            @default(true)
   api_key                             String?                            @db.LongText
-  plan_id                             Int?                            @db.UnsignedInt
+  plan_id                             Int?                               @db.UnsignedInt
   subscription_status                 String?                            @db.VarChar(20)
   additional_websites                 Int?
   additional_users                    Int?
   additional_storage                  Int?
-  source_id                           Int?                            @db.UnsignedInt
+  source_id                           Int?                               @db.UnsignedInt
   webhook_token                       String?                            @db.LongText
   clickup_token                       String?                            @db.LongText
   team_id                             String?                            @db.VarChar(255)
@@ -1433,7 +1434,7 @@ model webhook_calls {
 }
 
 model wp_edd_license_activations {
-  site_id    Int  @id @default(autoincrement())
+  site_id    Int     @id @default(autoincrement())
   site_name  String  @db.VarChar(128)
   license_id Int
   activated  Boolean
@@ -1443,9 +1444,9 @@ model wp_edd_license_activations {
 }
 
 model wpf_users {
-  id               Int    @id @default(autoincrement()) @db.UnsignedInt
-  wpf_id           Int?   @db.UnsignedInt
-  site_id          Int?   @db.UnsignedInt
+  id               Int       @id @default(autoincrement()) @db.UnsignedInt
+  wpf_id           Int?      @db.UnsignedInt
+  site_id          Int?      @db.UnsignedInt
   wpf_display_name String    @db.VarChar(255)
   wpf_name         String?   @db.VarChar(255)
   wpf_email        String    @db.VarChar(255)

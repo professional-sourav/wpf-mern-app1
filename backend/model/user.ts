@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 export const getAllusers = async () => {
     const allUsers = await prisma.users.findMany({
         take: 10,
-        
         select: {
             id: true,
             name: true,
@@ -15,7 +14,7 @@ export const getAllusers = async () => {
             subscription_status: true,
         }
     }).catch((err: any) => {
-        console.log(err.message);        
+        console.log(err.message);
     })
 
     return allUsers;
@@ -27,7 +26,7 @@ export const getUser = async (user_id: number) => {
             id: user_id
         }
     }).catch((err: any) => {
-        console.log(err.message);        
+        console.log(err.message);
     })
 
     return allUsers;

@@ -3,21 +3,20 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const getAllSites = async (user_id?: number) => {
+    console.log("User ID: ", user_id);
+
     const allSites = await prisma.sites.findMany({
         where: {
-            user_id: user_id? user_id : null
+            user_id: user_id ? user_id : null
+        },
+        include: {
+            _count: {
+                select: { tasks: true },
+            },
         },
         take: 10,
-       include: {
-            tasks: {
-                take: 10,
-                orderBy: {
-                    id: 'desc'
-                }
-            }
-       } 
     }).catch((err: any) => {
-        console.log(err.message);        
+        console.log(err.message);
     })
 
     return allSites;
@@ -29,7 +28,7 @@ export const getSite = async (site_id: number) => {
             id: site_id
         }
     }).catch((err: any) => {
-        console.log(err.message);        
+        console.log(err.message);
     })
 
     return site;

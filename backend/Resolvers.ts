@@ -4,7 +4,7 @@ import { getAllusers, getUser } from "./model/user";
 
 const Resolvers = {
     Query: {
-        
+
         login: (_: any, args: any) => login(args.email, args.password),
 
         getAllusers: getAllusers,

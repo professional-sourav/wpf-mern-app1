@@ -14,11 +14,28 @@ const Schema = gql`
         id: Int!
         name: String!
         url: String!
-        user: User!
-        type: String!
-        src: String!
+        user: User
+        type: String
+        image: String
+        src: String
         is_active: Boolean!
-        tasks: [Task]!
+        tasks: [Task]
+    }
+
+    type TaskCount {
+        tasks: Int
+    }
+
+    type SiteList {
+        id: Int!
+        name: String!
+        url: String!
+        type: String
+        image: String
+        src: String
+        is_active: Boolean!
+        totalTasks: Int
+        _count: TaskCount
     }
 
     type Task {
@@ -49,7 +66,7 @@ const Schema = gql`
         getAllusers: [User] # will return multiple Person instances
         getUser(id: Int): User # has an argument of 'id of type Integer.
 
-        getAllSites(user_id: Int): [Site]
+        getAllSites(user_id: Int): [SiteList]
         getSite: Site
     }
 `;
