@@ -73,7 +73,7 @@ const LoginArea = () => {
                         type="submit"
                         value="Sign In"
                         className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 font-medium text-white transition hover:bg-opacity-90"
-                        data-nlok-ref-guid="c29022e0-7a0f-4ebf-a65d-37278299b5be" />
+                        disabled={loading} />
                 </div>
 
                 <SignInWithGoogle />

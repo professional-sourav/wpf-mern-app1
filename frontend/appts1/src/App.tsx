@@ -11,7 +11,6 @@ function App() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log("User Token:", userToken);
     if (!userToken) {
       navigate('/login')
     }
