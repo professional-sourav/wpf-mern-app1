@@ -1,3 +1,4 @@
+import AddNewSite from './AddNewSite'
 import ThemeSwitcher from './ThemeSwitcher'
 
 const HeaderItems = () => {
@@ -6,6 +7,9 @@ const HeaderItems = () => {
       <ul className="flex items-center gap-2 2xsm:gap-4">        
         <li>
             <ThemeSwitcher />
+        </li>
+        <li>
+          <AddNewSite />
         </li>
       </ul>      
     </div>
