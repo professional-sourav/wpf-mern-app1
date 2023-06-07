@@ -12,6 +12,8 @@ const Sites = () => {
 
   useEffect(() => {
     const user: any = JSON.parse(localStorage.getItem('userInfo'))
+    console.log(user.id);
+    
     dispatch(getSiteListing(user.id as number))
 
   }, [])
@@ -29,7 +31,7 @@ const Sites = () => {
         {
           loading
             ? <div>Loading...</div>
-            : data.map((item: any) => <SiteItemGridView {...item} />)
+            : data.length && data.map((item: any) => <SiteItemGridView key={item.id} {...item} />)
         }
       </div>
     </>

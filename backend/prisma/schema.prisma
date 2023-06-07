@@ -1000,7 +1000,6 @@ model sites {
   tags                       tags[]
   tasks                      tasks[]
   wpf_users                  wpf_users[]
-  taskCount                  Int?                         @default(0)
 
   @@index([project_id], map: "index_sites_project_id")
   @@index([license_id], map: "license_id")

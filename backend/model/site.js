@@ -12,18 +12,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSite = exports.getAllSites = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
-const getAllSites = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("User ID: ", user_id);
+const getAllSites = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("User ID: ", userId);
+    const teamMembers = userId ? yield getTeamMembers(userId) : [];
+    teamMembers.push({
+        id: userId,
+        name: "",
+        email: ""
+    });
+    console.log(teamMembers);
     const allSites = yield prisma.sites.findMany({
         where: {
-            user_id: user_id ? user_id : null
+            user_id: {
+                in: teamMembers.map((member) => member.id)
+            }
         },
         include: {
             _count: {
                 select: { tasks: true },
             },
+            user: true,
         },
         take: 10,
+        orderBy: {
+            id: 'desc'
+        }
     }).catch((err) => {
         console.log(err.message);
     });
@@ -41,3 +54,16 @@ const getSite = (site_id) => __awaiter(void 0, void 0, void 0, function* () {
     return site;
 });
 exports.getSite = getSite;
+const getTeamMembers = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const teamMembers = yield prisma.users.findMany({
+        select: {
+            id: true,
+            name: true,
+            email: true
+        },
+        where: {
+            admin_id: user_id
+        }
+    });
+    return teamMembers;
+});

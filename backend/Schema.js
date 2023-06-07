@@ -36,6 +36,7 @@ const Schema = (0, apollo_server_core_1.gql) `
         src: String
         is_active: Boolean!
         totalTasks: Int
+        user: User
         _count: TaskCount
     }
 
@@ -67,7 +68,7 @@ const Schema = (0, apollo_server_core_1.gql) `
         getAllusers: [User] # will return multiple Person instances
         getUser(id: Int): User # has an argument of 'id of type Integer.
 
-        getAllSites(user_id: Int): [SiteList]
+        getAllSites(userId: Int): [SiteList]
         getSite: Site
     }
 `;

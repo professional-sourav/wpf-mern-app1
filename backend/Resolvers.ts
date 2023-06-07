@@ -10,7 +10,7 @@ const Resolvers = {
         getAllusers: getAllusers,
         getUser: (_: any, args: any) => getUser(args.id),
 
-        getAllSites: (_: any, args: any) => getAllSites(args.user_id),
+        getAllSites: (_: any, args: any) => getAllSites(args.userId),
         getSite: (_: any, args: any) => getSite(args.id),
     }
 }

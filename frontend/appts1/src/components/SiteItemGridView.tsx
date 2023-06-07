@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SiteItemGridView = ({ id, name, image }) => {
+const SiteItemGridView = ({ id, name, image, user }) => {
     return (
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex items-center gap-3 py-5 px-6">
@@ -9,7 +9,7 @@ const SiteItemGridView = ({ id, name, image }) => {
                 </div>
                 <div>
                     <h4 className="font-medium text-black dark:text-white">
-                        Naimur Rahman
+                        {user ? user.name : ""}
                     </h4>
                     <p className="text-xs font-medium">Content Writer</p>
                 </div>

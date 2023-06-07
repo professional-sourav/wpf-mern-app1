@@ -9,22 +9,26 @@ export const getSiteListing = createAsyncThunk('site/getSiteListing', async (use
         }
     }
 
-    console.log("UserID:", userId);
+    console.log("UserID:", userId, typeof (userId));
 
     const siteListingResponse = await axios.post(
         'http://localhost:4000/graphql', {
         query: `query GetAllSites($userId: Int) {
-            getAllSites(user_id: $userId) {
+            getAllSites(userId: $userId) {
               id,
               name,
-              image,
+              image,          
               _count {
                 tasks
+              }
+              user {
+                id,
+                name,
               }
             }
           }`,
         variables: {
-            user_id: userId
+            userId: Number(userId)
         }
     })
 
